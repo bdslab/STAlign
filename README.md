@@ -1,1 +1,1 @@
-# STAlign
+# STAlign Structural Tree Alignment
