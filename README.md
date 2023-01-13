@@ -1,1 +1,3 @@
-# STAlign Structural Tree Alignment #
+# STAlign Structural Tree Alignment
+
+Copyright 2022 BDSLab
