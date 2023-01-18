@@ -7,21 +7,21 @@ package it.unicam.cs.bdslab.stalign;
  *
  */
 public interface CommandLineMessages {
-    public static String VERSION = "1.0.1";
+    public static String VERSION = "0.9";
 
-    public static String LAUNCH_COMMAND = "java -jar TERSAlign.jar";
-    public static String HEADER = "\n\nTERSAlign Comparator version " + VERSION
-            + " - Build Algebraic Trees and Structural Trees or "
-            + "calculate TERSA Distance by alignign Structural Trees of "
-            + "secondary structures with arbitrary pseudoknots. Default "
-            + "input file format is Extended Dot-Bracket Notation, see "
+    public static String LAUNCH_COMMAND = "java -jar STAlign.jar";
+    public static String HEADER = "\n\nSTAlign Comparator version " + VERSION
+            + " - Build Structural Trees or "
+            + "calculate ASA Distance by alignign Structural Trees of "
+            + "Biomolecules. Default "
+            + "input file format is PDB format, see "
             + "https://www.tbi.univie.ac.at/RNA/ViennaRNA/doc/html/rna_structure_notations.html "
-            + "Alternatively, and Arc Annotated Sequence format can be used, "
-            + "similar to the Extended Dot-Bracket Notation format in which the"
+            + "Alternatively, Arc Annotated Sequence format can be used, "
+            + "in which "
             + " weak bonds are expressed as a list (i_1,j_1);(i_2,j_2); ... ;"
             + "(i_m,j_m) where each index i_k, j_k belongs to the interval "
             + "[1,n] (where n is the length of the primary sequence) and "
-            + "i_k < j_k + 1 for all k. In both intput file format the sequence of nucleotides is optional."
+            + "i_k < j_k for all k. In this file format the sequence is optional."
             + "Default output is a linearised tree of "
             + "the form (\"node-label\", [list-of-children]), use option -l to "
             + "change to LaTeX output. The LaTeX code can be processed with "
@@ -37,13 +37,13 @@ public interface CommandLineMessages {
             + "trees corresponding to the two structures "
             + "given in the Extended Dot-Bracket Notation files rna1.dbn.txt " + "and rna2.dbn.txt\n\n";
 
-    public static String LAUNCH_COMMAND_WB = "java -jar TERSAlignWorkbench.jar";
+    public static String LAUNCH_COMMAND_WB = "java -jar STAlignWorkbench.jar";
     // TODO modificare stringhe _WB
-    public static String HEADER_WB = "\n\nTERSAlign Workbench Comparator version " + VERSION
-            + " - Compare all the RNA secondary structures files in a given "
-            + "input folder by computing the TERSA Distance between all possible "
-            + "pairs. All the files are expected to be in Extended "
-            + "Dot-Bracket Notation or in Arc Annotated "
+    public static String HEADER_WB = "\n\nSTAlign Workbench Comparator version " + VERSION
+            + " - Compare all the biomolecule files in a given "
+            + "input folder by computing the ASA Distance between all possible "
+            + "pairs. All the files are expected to be in PDB format "
+            + "or in Arc Annotated "
             + "Sequences formats. The sequence of nucleotides is optional. The output is given as two "
             + "comma-separated values files describing the processed "
             + "structures and containing the TERSA Distance calculated "
