@@ -1,0 +1,33 @@
+***************************************************************************
+ASPRAlign - Algebraic Structural Pseudoknot RNA Alignment - version 1.0
+
+INSTALLATION
+***************************************************************************
+
+Download the zip file of last version of ASPRAlign from folder "download" at
+
+https://github.com/bdslab/aspralign/tree/master/download
+
+and put it in any position of your drive. 
+
+Unzip the file with the facilities of your operating system. The folder 
+ASPRAlign-<VersionNumber> is created containing the following files:
+
+- ASPRAlign.jar --- executable jar of the basic ASPRAlign comparison
+- ASPRAlignWorkbench.jar --- executable jar for the ASPRAlign workbench comparator
+- ASPRAlign-config.txt --- default ASPRAlign configuration file
+- ASPRAlign-config-alternative.txt --- alternative ASPRAlign configuration file
+- examples --- folder containing sample input and output files
+- INSTALL.txt --- information on ASPRAlign installation
+- README.md --- ASPRAlign description and usage information
+- COPYING.txt --- copyright information
+- LICENSE --- full GNU GPL Version 3 License
+- CHANGELOG.txt --- information about the evolution of ASPRAlign versions
+
+The executable jar files runs on every Linux, Windows and Mac OS platform
+in which a Java SE Runtime Environment 8 is installed. 
+
+For information and installing the Java Runtime Environment see
+http://www.oracle.com/technetwork/java/javase/downloads/index.html
+
+See README.txt for usage information
