@@ -1,0 +1,5 @@
+Num,FileName,NumberOfNucleotides,NumberOfWeakBonds,TimeToGenerateStructuralRNATree[ns]
+1,"1o0b.pdb",604,534,51610542
+2,"1o0c.pdb",604,532,13612750
+3,"1zjw.pdb",604,531,7859042
+4,"2re8.pdb",604,531,6866708
