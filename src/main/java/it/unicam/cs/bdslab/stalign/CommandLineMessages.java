@@ -93,7 +93,7 @@ public interface CommandLineMessages {
             + "latter contains, for each pair of processed structures, the "
             + "TERSA Distance between the two structures and execution time " + "information.\n\n";
 
-    public static String COPYRIGHT = "TERSAlign Copyright (C) 2020 Michela Quadrini, Luca Tesei, "
+    public static String COPYRIGHT = "STAlign Copyright (C) 2022 Michela Quadrini, Luca Tesei, "
             + "Emanuela Merelli - BioShape and Data Science Lab at the University of Camerino,"
             + " Italy - http://www.emanuelamerelli.eu/bigdata/\n\n";
     public static String SHORT_NOTICE = "This program comes with ABSOLUTELY NO WARRANTY; for details use "
