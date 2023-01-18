@@ -1,3 +1,24 @@
+/**
+ * STAlign - Structural Tree Alignment
+ * 
+ * Copyright (C) 2022 BioShape and Data Science Lab at the University of Camerino, Italy - 
+ * http://www.emanuelamerelli.eu/bigdata/
+ *  
+ * This file is part of STAlign.
+ * 
+ * STAlign is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * any later version.
+ * 
+ * STAlign is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with STAlign. If not, see <http://www.gnu.org/licenses/>.
+ */
 package it.unicam.cs.bdslab.stalign;
 
 /**
@@ -13,12 +34,12 @@ public interface CommandLineMessages {
     public static String HEADER = "\n\nSTAlign Comparator version " + VERSION
             + " - Build Structural Trees or "
             + "calculate ASA Distance by alignign Structural Trees of "
-            + "Biomolecules. Default "
-            + "input file format is PDB format, see "
-            + "https://www.tbi.univie.ac.at/RNA/ViennaRNA/doc/html/rna_structure_notations.html "
-            + "Alternatively, Arc Annotated Sequence format can be used, "
+            + "Biomolecules.\nDefault "
+            + "input file format is PDB format (see "
+            + "https://www.rcsb.org/)."
+            + "\nAlternatively, the Arc Annotated Sequence format can be used, "
             + "in which "
-            + " weak bonds are expressed as a list (i_1,j_1);(i_2,j_2); ... ;"
+            + "bonds are expressed as a list (i_1,j_1);(i_2,j_2); ... ;"
             + "(i_m,j_m) where each index i_k, j_k belongs to the interval "
             + "[1,n] (where n is the length of the primary sequence) and "
             + "i_k < j_k for all k. In this file format the sequence is optional."
@@ -28,14 +49,11 @@ public interface CommandLineMessages {
             + "LaTeX to produce a graphical representation of the tree in a "
             + "pdf file. Option -o for specifying output file is optional, if "
             + "not specified the result is printed on the standard output.\n\n";
-    public static String USAGE_EXAMPLES = "Usage examples:\n\n>" + LAUNCH_COMMAND
-            + " -g aas1.txt -l -o aas1.tex\n\nProduce file aas1.tex "
-            + "containing the LaTeX code to draw the algebraic tree "
-            + "corresponding to the structure given in the " + "Arc Annotated Sequence file aas1.txt\n\n>"
-            + LAUNCH_COMMAND + " -a rna1.dbn.txt rna2.dbn.txt\n\nPrint on the standard "
-            + "output the linearised alignment tree of the two structural "
-            + "trees corresponding to the two structures "
-            + "given in the Extended Dot-Bracket Notation files rna1.dbn.txt " + "and rna2.dbn.txt\n\n";
+    public static String USAGE_EXAMPLES = "\nUsage examples:\n\n>" + LAUNCH_COMMAND
+            + " -sc 1o0b -o 1o0b.txt\n\n" + "Produce file 1o0b.txt containing the linearised tree text of the structural tree "
+            	+ "corresponding to the PDB molecule with code 1o0b\n\n"
+            + LAUNCH_COMMAND + " -d -af examples/tRNA/1o0b.pdb examples/tRNA/1o0c.pdb\n\nPrint on the standard output the ASA distance between the two structural trees "
+            	+ "derived from the given PDB files\n\n";
 
     public static String LAUNCH_COMMAND_WB = "java -jar STAlignWorkbench.jar";
     // TODO modificare stringhe _WB
@@ -44,9 +62,9 @@ public interface CommandLineMessages {
             + "input folder by computing the ASA Distance between all possible "
             + "pairs. All the files are expected to be in PDB format "
             + "or in Arc Annotated "
-            + "Sequences formats. The sequence of nucleotides is optional. The output is given as two "
+            + "Sequences formats. The primary sequence is optional. The output is given as two "
             + "comma-separated values files describing the processed "
-            + "structures and containing the TERSA Distance calculated "
+            + "structures and containing the ASA Distance calculated "
             + "for each pair of processed structures. By default the "
             + "output files are put in the input folder. Use option -o"
             + " file-1 file-2 to specifiy different output files.\n";
@@ -93,8 +111,7 @@ public interface CommandLineMessages {
             + "latter contains, for each pair of processed structures, the "
             + "TERSA Distance between the two structures and execution time " + "information.\n\n";
 
-    public static String COPYRIGHT = "STAlign Copyright (C) 2022 Michela Quadrini, Luca Tesei, "
-            + "Emanuela Merelli - BioShape and Data Science Lab at the University of Camerino,"
+    public static String COPYRIGHT = "STAlign Copyright (C) 2022 BioShape and Data Science Lab at the University of Camerino,"
             + " Italy - http://www.emanuelamerelli.eu/bigdata/\n\n";
     public static String SHORT_NOTICE = "This program comes with ABSOLUTELY NO WARRANTY; for details use "
             + "option '-i'. This is free software, and you are welcome to redistribute it "

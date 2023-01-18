@@ -1,21 +1,21 @@
-# STAlign Configuration file
+# STAlign Configuration file Alternative
 #
 # Cost for inserting an operator
-INSERT_OPERATOR_COST=100
+INSERT_OPERATOR_COST=1
 # Cost for deleting an operator
-DELETE_OPERATOR_COST=100
+DELETE_OPERATOR_COST=1
 # Cost for replacing an operator with another one
-REPLACE_OPERATOR_COST=100
+REPLACE_OPERATOR_COST=1
 # Cost for inserting an hairpin
-INSERT_HAIRPIN_COST=100
+INSERT_HAIRPIN_COST=1
 # Cost for deleting an hairpin
-DELETE_HAIRPIN_COST=100
+DELETE_HAIRPIN_COST=1
 # Cost for one mismatch in the number of crossing arcs in case of crossing operator
-CROSSING_MISMATCH_COST=1
+CROSSING_MISMATCH_COST=0.1
 # Cost for inserting operator or hairpin in edit distance
-EDITDISTANCE_INSERT_COST=100
+EDITDISTANCE_INSERT_COST=1
 # Cost for deleting operator or hairpin in edit distance
-EDITDISTANCE_DELETE_COST=100
+EDITDISTANCE_DELETE_COST=1
 # Cost for renaming operator or hairpin in edit distance
-EDITDISTANCE_RENAME_COST=100
+EDITDISTANCE_RENAME_COST=1
 

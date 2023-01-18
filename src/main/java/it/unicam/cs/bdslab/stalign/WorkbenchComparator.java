@@ -1,3 +1,24 @@
+/**
+ * STAlign - Structural Tree Alignment
+ * 
+ * Copyright (C) 2022 BioShape and Data Science Lab at the University of Camerino, Italy - 
+ * http://www.emanuelamerelli.eu/bigdata/
+ *  
+ * This file is part of STAlign.
+ * 
+ * STAlign is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * any later version.
+ * 
+ * STAlign is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with STAlign. If not, see <http://www.gnu.org/licenses/>.
+ */
 package it.unicam.cs.bdslab.stalign;
 
 import java.io.File;
@@ -38,7 +59,7 @@ import org.biojava.nbio.structure.contact.Pair;
 import org.biojava.nbio.structure.io.PDBFileReader;
 
 /**
- * This class contains a main that runs the TERSAlign comparison algorithm among
+ * This class contains a main that runs the STAlign comparison algorithm among
  * all the RNA secondary structures (with arbitrary pseudoknots) in a given
  * folder.
  *
@@ -134,7 +155,7 @@ public class WorkbenchComparator {
         // Manage Option e
         if (cmd.hasOption("e")) {
             ScoringFunction f = new ScoringFunction(configurationFileName);
-            String scores = "TERSAlign current costs:\n\n" + "Cost for Operator Insertion = "
+            String scores = "STAlign current costs:\n\n" + "Cost for Operator Insertion = "
                     + f.getInsertOperatorCost() + "\nCost for Operator Deletion = " + f.getDeleteOperatorCost()
                     + "\nCost for Operator Replacement with Operator = " + f.getReplaceOperatorCost()
                     + "\nCost for Hairpin Insertion = " + f.getInsertHairpinCost() + "\nCost for Hairpin Deletion = "
@@ -195,8 +216,8 @@ public class WorkbenchComparator {
             // Output files creation
             PrintStream outputStream = null;
             PrintStream structuresStream = null;
-            String outputStreamName = inputDirectory.getAbsolutePath() + "/" + "TERSAlignComparisonResults.csv";
-            String structuresStreamName = inputDirectory.getAbsolutePath() + "/" + "TERSAlignProcessedStructures.csv";
+            String outputStreamName = inputDirectory.getAbsolutePath() + "/" + "STAlignComparisonResults.csv";
+            String structuresStreamName = inputDirectory.getAbsolutePath() + "/" + "STAlignProcessedStructures.csv";
 
             // Manage option "o"
             if (cmd.hasOption("o")) {
@@ -219,13 +240,13 @@ public class WorkbenchComparator {
                 outputStream.println(
                         "FileName1,NumberOfNucleotides1,NumberOfWeakBonds1,TimeToGenerateStructuralRNATree1[ns],"
                                 + "FileName2,NumberOfNucleotides2,NumberOfWeakBonds2,TimeToGenerateStructuralRNATree2[ns],"
-                                + "MaxNumberOfNucleotides1-2,TERSADistance,TimeToCalculateTERSADistance[ns]");
+                                + "MaxNumberOfNucleotides1-2,STADistance,TimeToCalculateSTADistance[ns]");
             } else {
                 structuresStream.println("Num,FileName,NumberOfWeakBonds,TimeToGenerateStructuralRNATree[ns]");
                 outputStream.println(
                         "FileName1,NumberOfWeakBonds1,TimeToGenerateStructuralRNATree1[ns],"
                                 + "FileName2,NumberOfWeakBonds2,TimeToGenerateStructuralRNATree2[ns],"
-                                + "TERSADistance,TimeToCalculateTERSADistance[ns]");
+                                + "STADistance,TimeToCalculateSTADistance[ns]");
             }
             // Load configuration file for costs
             ScoringFunction f = new ScoringFunction(configurationFileName);
@@ -487,8 +508,8 @@ public class WorkbenchComparator {
             // Output files creation
             PrintStream outputStream = null;
             PrintStream structuresStream = null;
-            String outputStreamName = inputDirectory.getAbsolutePath() + "/" + "TERSAlignComparisonResults.csv";
-            String structuresStreamName = inputDirectory.getAbsolutePath() + "/" + "TERSAlignProcessedStructures.csv";
+            String outputStreamName = inputDirectory.getAbsolutePath() + "/" + "STAlignComparisonResults.csv";
+            String structuresStreamName = inputDirectory.getAbsolutePath() + "/" + "STAlignProcessedStructures.csv";
 
             // Manage option "o"
             if (cmd.hasOption("o")) {
@@ -511,13 +532,13 @@ public class WorkbenchComparator {
                 outputStream.println(
                         "FileName1,NumberOfNucleotides1,NumberOfWeakBonds1,TimeToGenerateStructuralRNATree1[ns],"
                                 + "FileName2,NumberOfNucleotides2,NumberOfWeakBonds2,TimeToGenerateStructuralRNATree2[ns],"
-                                + "MaxNumberOfNucleotides1-2,EditDistance,TimeToCalculateTERSADistance[ns]");
+                                + "MaxNumberOfNucleotides1-2,EditDistance,TimeToCalculateSTADistance[ns]");
             } else {
                 structuresStream.println("Num,FileName,NumberOfWeakBonds,TimeToGenerateStructuralRNATree[ns]");
                 outputStream.println(
                         "FileName1,NumberOfWeakBonds1,TimeToGenerateStructuralRNATree1[ns],"
                                 + "FileName2,NumberOfWeakBonds2,TimeToGenerateStructuralRNATree2[ns],"
-                                + "EditDistance,TimeToCalculateTERSADistance[ns]");
+                                + "EditDistance,TimeToCalculateSTADistance[ns]");
             }
             // Load configuration file for costs
             ScoringFunction f = new ScoringFunction(configurationFileName);

@@ -1,3 +1,24 @@
+/**
+ * STAlign - Structural Tree Alignment
+ * 
+ * Copyright (C) 2022 BioShape and Data Science Lab at the University of Camerino, Italy - 
+ * http://www.emanuelamerelli.eu/bigdata/
+ *  
+ * This file is part of STAlign.
+ * 
+ * STAlign is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * any later version.
+ * 
+ * STAlign is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with STAlign. If not, see <http://www.gnu.org/licenses/>.
+ */
 package it.unicam.cs.bdslab.stalign;
 
 import java.io.FileInputStream;
@@ -11,7 +32,7 @@ import fr.orsay.lri.varna.models.treealign.TreeAlignLabelDistanceAsymmetric;
  * Define a proper scoring function for the alignment of two structural RNA
  * trees.
  *
- * @author Luca Tesei
+ * @author Luca Tesei, Filippo Lampa, Marco Serenelli
  *
  */
 public class ScoringFunction implements TreeAlignLabelDistanceAsymmetric<String, String> {
@@ -19,7 +40,7 @@ public class ScoringFunction implements TreeAlignLabelDistanceAsymmetric<String,
     /**
      * Default name of configuration file.
      */
-    public static final String DEFAULT_PROPERTY_FILE = "src/main/resources/Scoring_Config.txt";
+    public static final String DEFAULT_PROPERTY_FILE = "STAlign-Config.txt";
 
     private String propertyFileName;
     private double editdistanceInsertCost;

@@ -1,3 +1,24 @@
+/**
+ * STAlign - Structural Tree Alignment
+ * 
+ * Copyright (C) 2022 BioShape and Data Science Lab at the University of Camerino, Italy - 
+ * http://www.emanuelamerelli.eu/bigdata/
+ *  
+ * This file is part of STAlign.
+ * 
+ * STAlign is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * any later version.
+ * 
+ * STAlign is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with STAlign. If not, see <http://www.gnu.org/licenses/>.
+ */
 package it.unicam.cs.bdslab.stalign;
 
 import java.io.BufferedWriter;
@@ -22,7 +43,7 @@ import org.biojava.nbio.structure.io.PDBFileReader;
 /**
  * MainComparator class interacting with the user through command line options.
  *
- * @author Luca Tesei
+ * @author Luca Tesei, Filippo Lampa, Marco Serenelli
  *
  */
 public class MainComparator {
@@ -33,7 +54,7 @@ public class MainComparator {
         Options options = new Options();
         // define command line options
         Option o1 = new Option("sc","structcode",true,"Produce the structural RNA/Protein tree corresponding to the given structure by PDB code");
-        o1.setArgName("input-file");
+        o1.setArgName("input-pdb-code");
         options.addOption(o1);
         Option o2 = new Option("sf","structfile",true,"Produce the structural RNA/Protein tree corresponding to the given structure by PDB file");
         o2.setArgName("input-file");
@@ -43,7 +64,7 @@ public class MainComparator {
         options.addOption(o12);
         Option o3 = new Option("ac","aligncode",true,"Align two given structures by PDB code producing alignment tree and distance");
         o3.setArgs(2);
-        o3.setArgName("input-file1 input-file2");
+        o3.setArgName("input-pdb-code1 input-pdb-code2");
         options.addOption(o3);
         Option o11 = new Option("af","alignfile",true,"Align two given structures by PDB file producing alignment tree and distance");
         o11.setArgs(2);
@@ -55,7 +76,7 @@ public class MainComparator {
         options.addOption(o13);
         Option o17 = new Option("edc","editdistancecode",true,"Calculates the edit distance of two given structures by PDB code");
         o17.setArgs(2);
-        o17.setArgName("input-file1 input-file2");
+        o17.setArgName("input-pdb-code1 input-pdb-code2");
         options.addOption(o17);
         Option o18 = new Option("edf","editdistancefile",true,"Calculates the edit distance of two given structures by PDB file");
         o18.setArgs(2);
@@ -150,7 +171,7 @@ public class MainComparator {
         // Manage Option e
         if (cmd.hasOption("e")) {
             ScoringFunction f = new ScoringFunction(configurationFileName);
-            String scores = "TERSAlign current costs:\n\n" + "Cost for Operator Insertion = "
+            String scores = "STAlign current costs:\n\n" + "Cost for Operator Insertion = "
                     + f.getInsertOperatorCost() + "\nCost for Operator Deletion = " + f.getDeleteOperatorCost()
                     + "\nCost for Operator Replacement with Operator = " + f.getReplaceOperatorCost()
                     + "\nCost for Hairpin Insertion = " + f.getInsertHairpinCost() + "\nCost for Hairpin Deletion = "
