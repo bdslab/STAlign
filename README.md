@@ -20,7 +20,7 @@ Download the following files from folder `download` at
 and put them in any position of your drive. 
 
 Unzip the file `STAlignAux-vx.zip` with the facilities of your operating system. 
-The folder `STAlign-<VersionNumber>` is created containing the following files:
+The folder `STAlignAux-<VersionNumber>` is created containing the following files:
 
 - STAlign-config.txt --- default STAlign configuration file
 - STAlign-config-alternative.txt --- alternative STAlign configuration file
