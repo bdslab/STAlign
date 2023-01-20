@@ -1,46 +1,37 @@
-# STAlign - Structural Tree Alignment 
+# STAlign - Structural Tree Alignment v0.9
 
-@version 0.9
+STAlign builds Structural Trees of 3D biomolecules (RNA, Proteins) and computes 
+the Algebraic Structural Alignment (ASA) Distance.
 
-STAlign builds Structural Trees of biomolecules or calculate  the ASA Distance 
-
-If you use STAlign please cite us:
-
-- Quadrini, M., Tesei, L., Merelli, E. 
-
+<!---If you use STAlign please cite us:
+- Quadrini, M., Tesei, L. "Pippo", Submitted (2023).
+--->
 
 ## Accepted Input file formats 
 
 * PDB format <https://www.rcsb.org/>
-* Arc Annotated Sequence: includes the sequence (optional) and the bonds, expressed as a list `(i_1,j_1);(i_2,j_2); ... ;(i_m,j_m)` where each index i_k, j_k belongs to the interval [1,n] (n is the length
-of the primary sequence) and i_k < j_k  for all k.
+* Arc Annotated Sequence: includes the sequence (optional) and the bonds, expressed as a list `(i_1,j_1);(i_2,j_2); ... ;(i_m,j_m)` where each index `i_k, j_k` belongs to the interval `[1,n]` where `n` is the length
+of the primary sequence and `i_k < j_k`  for all `k`.
 
 
 ## STAlign is distributed with two executable jar files
-* STAlign.jar (basic 
-comparator and tree builder) and 
+* STAlign.jar (basic comparator and tree builder) and 
 * STAlignWorkbench.jar (workbench comparator)
 
 ## STAlign.jar usage examples
 
-* `> java -jar STAlign.jar -g aas1.txt -l -o aas1.tex`
+* `> java -jar STAlign.jar -sc 1o0b -o 1o0b.txt`
 
-Produce file `aas1.tex` containing the LaTeX code to draw the algebraic RNA
-tree corresponding to the RNA secondary structure given in the Arc
-Annotated Sequence file `aas1.txt`
+Produce file `1o0b.txt` containing the linearised tree text of the structural tree
+corresponding to the PDB molecule with code `1o0b`.
 
-* `> java -jar STAlign.jar -a rna1.dbn.txt rna2.dbn.txt`
+* `> java -jar STAlign.jar -d -af examples/tRNA/1o0b.pdb examples/tRNA/1o0c.pdb`
 
-Print on the standard output the linearised alignment tree of the two
-structural RNA trees corresponding to the two RNA secondary structures
-given in the Extended Dot-Bracket Notation files `rna1.dbn.txt` and
-`rna2.dbn.txt`
+Print on the standard output the ASA distance between the two structural trees 
+derived from the given PDB files.
 
 See folder `examples` for some sample input files in both notations
-coming from public databases or from the paper: Michela Quadrini, Luca 
-Tesei, Emanuela Merelli "An algebraic language for RNA pseudoknots 
-comparison", BMC Bioinformatics 20, Article number: 161 (2019).
-https://bmcbioinformatics.biomedcentral.com/articles/10.1186/s12859-019-2689-5
+coming from public databases or from the paper
 
 ## Output formats
 
@@ -67,20 +58,20 @@ can reside in any folder.
 
 ## STAlignWorkbench.jar usage examples
 
-* `> java -jar STAlignWorkbench.jar -f TestWorkBench1`
+* `> java -jar STAlignWorkbench.jar -f examples/tRNA`
 
-Processes all the files in folder "`TestWorkBench1`". Each file is read as
-an RNA secondary structure with arbitrary pseudoknots. Comma-separated values 
-files "`STAlignProcessedStructures.csv`" and "`STAlignComparisonResults.csv`"
-are created in the folder "`TestWorkBench1`". The former contains the
-description of all the structures that were found and correctly processed.
-The latter contains, for each pair of processed structures, the STA
-Distance between the two structures and execution time information.
+Processes all the files in folder `tRNA`. Each file is read as a
+PDB file or Arc Annotated Sequence format. Comma-separated values files 
+`STAlignProcessedStructures.csv` and
+`STAlignComparisonResults.csv` are created in the folder
+"`tRNA`". The former contains the description of all the
+biomolecules that were found and correctly processed. The latter contains,
+for each pair of processed biomolecules, the ASA Distance between the two
+correspondig structural trees and execution time information.
 
-* `>java -jar STAlignWorkbench.jar -f TestWorkBench1 -o stucts.csv
-cmpr.csv -n my-config.txt`
+* `>java -jar STAlignWorkbench.jar -f examples/tRNA -o stucts.csv cmpr.csv -n my-config.txt`
 
-Processes all the files in folder `TestWorkBench1` as above but produce
+Processes all the files in folder `tRNA` as above but produce
 the description of processed structures in file `structs.csv` and
 comparison results in file `cmpr.csv`. Instead of using
 `STAling-config.txt` default configuration file, use `my-config.txt` as
@@ -116,8 +107,6 @@ in which a Java SE Runtime Environment 8 is installed.
 
 For information and installing the Java Runtime Environment see
 <http://www.oracle.com/technetwork/java/javase/downloads/index.html>
-
-# Use
 
 ## Using STAlign
 
@@ -182,9 +171,10 @@ The following <options> can be used:
 
 # Copyright and License
 
-STAling Copyright (C) 2022 Michela Quadrini, Luca Tesei, Emanuela
-Merelli - BioShape and Data Science Lab at the University of Camerino,
-Italy - <http://www.emanuelamerelli.eu/bigdata/>
+STAling Copyright (C) 2022 BioShape and Data Science Lab at the University of Camerino,
+Italy 
+- Web: <http://www.emanuelamerelli.eu/bigdata/> 
+- GitHub: <https://github.com/bdslab>
 
 This program is free software: you can redistribute it and/or modify it
 under the terms of the GNU General Public License as published by the Free
@@ -199,9 +189,21 @@ for more details.
 You should have received a copy of the GNU General Public License along
 with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+# Credits
+
+STAlign is developed and tested by:
+
+- Filippo Lampa, University of Camerino
+- Marco Serenelli, University of Camerino
+- Luca Tesei, University of Camerino
+
+STAlign is tested by:
+
+- Michela Quadrini, University of Camerino
+
 # Contact Information
 
 Please report any issue to luca.tesei@unicam.it or to Luca Tesei, Polo
-Informatico, via Madonna delle Carceri 9, 62032 Camerino (MC) Italy.
+Informatico, via Madonna delle Carceri 7, 62032 Camerino (MC) Italy.
 
 

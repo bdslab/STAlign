@@ -1,0 +1,5 @@
+# Example of an arc annotated sequence file (Figure 11 of the paper)
+
+AUAUCAUCGAAUCGAAUC
+
+(2,6);(3,17);(4,16);(7,14)
