@@ -59,7 +59,7 @@ public class MainComparator {
         Option o2 = new Option("sf","structfile",true,"Produce the structural RNA/Protein tree corresponding to the given structure by PDB file");
         o2.setArgName("input-file");
         options.addOption(o2);
-        Option o12 = new Option("sm","structcustom",true,"Produce the structural RNA/Protein tree corresponding to the bonds given by file");
+        Option o12 = new Option("sm","structcustom",true,"Produce the structural RNA/Protein tree corresponding to the AAS file");
         o12.setArgName("input-file");
         options.addOption(o12);
         Option o3 = new Option("ac","aligncode",true,"Align two given structures by PDB code producing alignment tree and distance");
@@ -70,7 +70,7 @@ public class MainComparator {
         o11.setArgs(2);
         o11.setArgName("input-file1 input-file2");
         options.addOption(o11);
-        Option o13 = new Option("am","aligncustom",true,"Align two given structures by bonds file producing alignment tree and distance");
+        Option o13 = new Option("am","aligncustom",true,"Align two given structures by AAS file producing alignment tree and distance");
         o13.setArgs(2);
         o13.setArgName("input-file1 input-file2");
         options.addOption(o13);
@@ -82,7 +82,7 @@ public class MainComparator {
         o18.setArgs(2);
         o18.setArgName("input-file1 input-file2");
         options.addOption(o18);
-        Option o19 = new Option("edm","editdistancecustom",true,"Calculates the edit distance of two given structures by bonds file");
+        Option o19 = new Option("edm","editdistancecustom",true,"Calculates the edit distance of two given structures by AAS file");
         o19.setArgs(2);
         o19.setArgName("input-file1 input-file2");
         options.addOption(o19);

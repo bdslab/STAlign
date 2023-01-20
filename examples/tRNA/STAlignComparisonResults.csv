@@ -1,0 +1,7 @@
+FileName1,NumberOfNucleotides1,NumberOfWeakBonds1,TimeToGenerateStructuralTree1[ns],FileName2,NumberOfNucleotides2,NumberOfWeakBonds2,TimeToGenerateStructuralTree2[ns],MaxNumberOfNucleotides1-2,ASADistance,TimeToCalculateASADistance[ns]
+"1o0b.pdb",604,534,51610542,"1o0c.pdb",604,532,13612750,604,56800.0,3353478542
+"1o0b.pdb",604,534,51610542,"1zjw.pdb",604,531,7859042,604,65000.0,3835111917
+"1o0b.pdb",604,534,51610542,"2re8.pdb",604,531,6866708,604,65000.0,3542573959
+"1o0c.pdb",604,532,13612750,"1zjw.pdb",604,531,7859042,604,8200.0,3531674417
+"1o0c.pdb",604,532,13612750,"2re8.pdb",604,531,6866708,604,8200.0,3254968375
+"1zjw.pdb",604,531,7859042,"2re8.pdb",604,531,6866708,604,0.0,3600027459

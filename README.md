@@ -7,16 +7,42 @@ the Algebraic Structural Alignment (ASA) Distance.
 - Quadrini, M., Tesei, L. "Pippo", Submitted (2023).
 --->
 
+# Installation
+
+Download the zip file of last version of STAlign from folder `download` 
+at <https://github.com/bdslab/STAlign/>
+
+Direct link: <https://github.com/bdslab/STAlign/tree/master/download>
+
+and put it in any position of your drive. 
+
+Unzip the file with the facilities of your operating system. The folder 
+`STAlign-<VersionNumber>` is created containing the following files:
+
+- STAlign.jar --- executable jar of the basic STAlign comparison
+- STAlignWorkbench.jar --- executable jar for the STAlign workbench comparator
+- STAlign-config.txt --- default STAlign configuration file
+- STAlign-config-alternative.txt --- alternative STAlign configuration file
+- examples --- folder containing sample input and output files
+- INSTALL.txt --- information on STAlign installation
+- README.md --- STAlign description and usage information
+- COPYING.txt --- copyright information
+- LICENSE --- full GNU GPL Version 3 License
+- CHANGELOG.txt --- information about the evolution of STAlign versions
+
+The executable jar files runs on every Linux, Windows and Mac OS platform
+in which a Java SE Runtime Environment 8 is installed. 
+
+For information and installing the Java Runtime Environment see
+<http://www.oracle.com/technetwork/java/javase/downloads/index.html>
+
 ## Accepted Input file formats 
 
 * PDB format <https://www.rcsb.org/>
-* Arc Annotated Sequence: includes the sequence (optional) and the bonds, expressed as a list `(i_1,j_1);(i_2,j_2); ... ;(i_m,j_m)` where each index `i_k, j_k` belongs to the interval `[1,n]` where `n` is the length
+* Arc Annotated Sequence: includes the sequence (optional) and the bonds, 
+expressed as a list `(i_1,j_1);(i_2,j_2); ... ;(i_m,j_m)` where each index 
+`i_k, j_k` belongs to the interval `[1,n]` where `n` is the length
 of the primary sequence and `i_k < j_k`  for all `k`.
-
-
-## STAlign is distributed with two executable jar files
-* STAlign.jar (basic comparator and tree builder) and 
-* STAlignWorkbench.jar (workbench comparator)
 
 ## STAlign.jar usage examples
 
@@ -80,34 +106,6 @@ configuration file.
 See folder `examples` for some sample input folders containing structures 
 coming from public databases.
 
-# Installation
-
-Download the zip file of last version of STAlign from folder `download` at <https://github.com/bdslab/STAlign/>
-
-Direct link: <https://github.com/bdslab/STAlign/tree/master/download>
-
-and put it in any position of your drive. 
-
-Unzip the file with the facilities of your operating system. The folder 
-`STAlign-<VersionNumber>` is created containing the following files:
-
-- STAlign.jar --- executable jar of the basic STAlign comparison
-- STAlignWorkbench.jar --- executable jar for the STAlign workbench comparator
-- STAlign-config.txt --- default STAlign configuration file
-- STAlign-config-alternative.txt --- alternative STAlign configuration file
-- examples --- folder containing sample input and output files
-- INSTALL.txt --- information on STAlign installation
-- README.md --- STAlign description and usage information
-- COPYING.txt --- copyright information
-- LICENSE --- full GNU GPL Version 3 License
-- CHANGELOG.txt --- information about the evolution of STAlign versions
-
-The executable jar files runs on every Linux, Windows and Mac OS platform
-in which a Java SE Runtime Environment 8 is installed. 
-
-For information and installing the Java Runtime Environment see
-<http://www.oracle.com/technetwork/java/javase/downloads/index.html>
-
 ## Using STAlign
 
 Open a terminal window of your operating system and use the change directory 
@@ -119,30 +117,152 @@ digit:
 
 The following <options> can be used:
 
-    -a,--align <input-file1 input-file2>   Align two given structures
-                                           producing alignment tree and
-                                           distance
-    -c,--chkpair                           Check the presence of only
-                                           standard Watson-Crick and wobble
-                                           base pairing (disabled by default)
-    -d,--outdist                           Output only distance, no alignment
-                                           tree (works only with option -a)
-    -e,--showscores                        Show current values of edit scores
-                                           used for alignment
-    -g,--alg <input-file>                  Produce the algebraic RNA tree
-                                           corresponding to the given
-                                           structure
-    -h,--help                              Show usage information
-    -i,--info                              Show license and other info
-    -l,--latexout                          Output in LaTeX format instead of
-                                           linearised tree
-    -n,--useconffile <conf-file>           Use the specified configuration
-                                           file instead of the default one
-    -o,--out <output-file>                 Output result on the given file
-                                           instead of standard output
-    -s,--struct <input-file>               Produce the structural RNA tree
-                                           corresponding to the given
-                                           structure
+	-ac,--aligncode <input-pdb-code1 input-pdb-code2>        Align two
+                                                             given
+                                                             structures by
+                                                             PDB code
+                                                             producing
+                                                             alignment
+                                                             tree and
+                                                             distance
+	-af,--alignfile <input-file1 input-file2>                Align two
+                                                             given
+                                                             structures by
+                                                             PDB file
+                                                             producing
+                                                             alignment
+                                                             tree and
+                                                             distance
+	-am,--aligncustom <input-file1 input-file2>              Align two
+                                                             given
+                                                             structures by
+                                                             AAS file
+                                                             producing
+                                                             alignment
+                                                             tree and
+                                                             distance
+	-cm,--centerofmass                                       Calculate the
+                                                             distance
+                                                             matrix with
+                                                             center of
+                                                             mass method
+	-d,--outdist                                             Output only
+                                                             distance, no
+                                                             alignment
+                                                             tree
+	-e,--showscores                                          Show current
+                                                             values of
+                                                             edit scores
+                                                             used for
+                                                             alignment
+	-edc,--editdistancecode <input-pdb-code1 input-pdb-code2> Calculates
+                                                             the edit
+                                                             distance of
+                                                             two given
+                                                             structures by
+                                                             PDB code
+	-edf,--editdistancefile <input-file1 input-file2>        Calculates
+                                                             the edit
+                                                             distance of
+                                                             two given
+                                                             structures by
+                                                             PDB file
+	-edm,--editdistancecustom <input-file1 input-file2>      Calculates
+                                                             the edit
+                                                             distance of
+                                                             two given
+                                                             structures by
+                                                             AAS file
+	-h,--help                                                Show usage
+                                                             information
+	-i,--info                                                Show license
+                                                             and other
+                                                             info
+	-l,--latexout                                            Output in
+                                                             LaTeX format
+                                                             instead of
+                                                             linearised
+                                                             tree
+	-n,--useconffile <conf-file>                             Use the
+                                                             specified
+                                                             configuration
+                                                             file instead
+                                                             of the
+                                                             default one
+	-o,--out <output-file>                                   Output result
+                                                             on the given
+                                                             file instead
+                                                             of standard
+                                                             output
+	-p,--selectchains <chain-id>                             Calculate
+                                                             only the
+                                                             specific
+                                                             chains of a
+                                                             structure
+	-sc,--structcode <input-pdb-code>                        Produce the
+                                                             structural
+                                                             RNA/Protein
+                                                             tree
+                                                             corresponding
+                                                             to the given
+                                                             structure by
+                                                             PDB code
+	-sf,--structfile <input-file>                            Produce the
+                                                             structural
+                                                             RNA/Protein
+                                                             tree
+                                                             corresponding
+                                                             to the given
+                                                             structure by
+                                                             PDB file
+	-sm,--structcustom <input-file>                          Produce the
+                                                             structural
+                                                             RNA/Protein
+                                                             tree
+                                                             corresponding
+                                                             to the AAS
+                                                             file
+	-ssac,--ssaligncode <input-file1 input-file2>            Align two
+                                                             given
+                                                             secondary
+                                                             structures by
+                                                             PDB code
+                                                             producing
+                                                             alignment
+                                                             tree and
+                                                             distance
+	-ssaf,--ssalignfile <input-file1 input-file2>            Align two
+                                                             given
+                                                             secondary
+                                                             structures by
+                                                             PDB file
+                                                             producing
+                                                             alignment
+                                                             tree and
+                                                             distance
+	-ssc,--sscode <input-file>                               Produce the
+                                                             secondary
+                                                             structure
+                                                             structural
+                                                             RNA/Protein
+                                                             tree
+                                                             corresponding
+                                                             to the given
+                                                             structure by
+                                                             PDB code
+	-ssf,--ssfile <input-file>                               Produce the
+                                                             secondary
+                                                             structure
+                                                             structural
+                                                             RNA/Protein
+                                                             tree
+                                                             corresponding
+                                                             to the given
+                                                             structure by
+                                                             PDB file
+	-t,--threshold <threshold>                               Set a
+                                                             threshold
+
 
 ## Using STAlignWorkbench
 
@@ -155,19 +275,37 @@ comparator digit:
 
 The following <options> can be used:
 
-    -c,--chkpair                   Check the presence of only standard
-                                   Watson-Crick and wobble base pairing
-                                   (disabled by default)
-    -e,--showscores                Show current values of edit scores used
-                                   for alignment
-    -f,--input <input-folder>      Process the files in the given folder
-    -h,--help                      Show usage information
-    -i,--info                      Show license and other info
-    -n,--useconffile <conf-file>   Use the specified configuration file
-                                   instead of the default one
-    -o,--output <file-1 file-2>    Output structure descriptions on file-1
-                                   and comparison results on file-2 instead
-                                   of generating the default ouput files
+	-cm,--centerofmass                            Calculate the distance
+                                                  matrix with center of
+                                                  mass method
+	-e,--showscores                               Show current values of
+                                                  edit scores used for
+                                                  alignment
+	-edf,--editdistanceinput <input-folder>       Process the files in the
+                                                  given folder and
+                                                  calculate edit distance
+	-edfm,--editdistanceinputcustom <input-folder> Process the bond files
+                                                  in the given folder and
+                                                  calculate edit distance
+	-f,--input <input-folder>                     Process the files in the
+                                                  given folder
+	-fm,--inputcustom <input-folder>              Process the bond files
+                                                  in the given folder
+	-h,--help                                     Show usage information
+	-i,--info                                     Show license and other
+                                                  info
+	-n,--useconffile <conf-file>                  Use the specified
+                                                  configuration file
+                                                  instead of the default
+                                                  one
+	-o,--output <file-1 file-2>                   Output structure
+                                                  descriptions on file-1
+                                                  and comparison results
+                                                  on file-2 instead of
+                                                  generating the default
+                                                  ouput files
+	-t,--threshold <threshold>                    Set a threshold
+
 
 # Copyright and License
 

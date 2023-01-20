@@ -236,17 +236,17 @@ public class WorkbenchComparator {
             }
             // Write column names on the csv output files
             if(!custom) {
-                structuresStream.println("Num,FileName,NumberOfNucleotides,NumberOfWeakBonds,TimeToGenerateStructuralRNATree[ns]");
+                structuresStream.println("Num,FileName,NumberOfNucleotides,NumberOfWeakBonds,TimeToGenerateStructuralTree[ns]");
                 outputStream.println(
-                        "FileName1,NumberOfNucleotides1,NumberOfWeakBonds1,TimeToGenerateStructuralRNATree1[ns],"
-                                + "FileName2,NumberOfNucleotides2,NumberOfWeakBonds2,TimeToGenerateStructuralRNATree2[ns],"
-                                + "MaxNumberOfNucleotides1-2,STADistance,TimeToCalculateSTADistance[ns]");
+                        "FileName1,NumberOfNucleotides1,NumberOfWeakBonds1,TimeToGenerateStructuralTree1[ns],"
+                                + "FileName2,NumberOfNucleotides2,NumberOfWeakBonds2,TimeToGenerateStructuralTree2[ns],"
+                                + "MaxNumberOfNucleotides1-2,ASADistance,TimeToCalculateASADistance[ns]");
             } else {
-                structuresStream.println("Num,FileName,NumberOfWeakBonds,TimeToGenerateStructuralRNATree[ns]");
+                structuresStream.println("Num,FileName,NumberOfWeakBonds,TimeToGenerateStructuralTree[ns]");
                 outputStream.println(
-                        "FileName1,NumberOfWeakBonds1,TimeToGenerateStructuralRNATree1[ns],"
-                                + "FileName2,NumberOfWeakBonds2,TimeToGenerateStructuralRNATree2[ns],"
-                                + "STADistance,TimeToCalculateSTADistance[ns]");
+                        "FileName1,NumberOfWeakBonds1,TimeToGenerateStructuralTree1[ns],"
+                                + "FileName2,NumberOfWeakBonds2,TimeToGenerateStructuralTree2[ns],"
+                                + "ASADistance,TimeToCalculateASADistance[ns]");
             }
             // Load configuration file for costs
             ScoringFunction f = new ScoringFunction(configurationFileName);
@@ -528,17 +528,17 @@ public class WorkbenchComparator {
             }
             // Write column names on the csv output files
             if(!custom) {
-                structuresStream.println("Num,FileName,NumberOfNucleotides,NumberOfWeakBonds,TimeToGenerateStructuralRNATree[ns]");
+                structuresStream.println("Num,FileName,NumberOfNucleotides,NumberOfWeakBonds,TimeToGenerateStructuralTree[ns]");
                 outputStream.println(
-                        "FileName1,NumberOfNucleotides1,NumberOfWeakBonds1,TimeToGenerateStructuralRNATree1[ns],"
-                                + "FileName2,NumberOfNucleotides2,NumberOfWeakBonds2,TimeToGenerateStructuralRNATree2[ns],"
-                                + "MaxNumberOfNucleotides1-2,EditDistance,TimeToCalculateSTADistance[ns]");
+                        "FileName1,NumberOfNucleotides1,NumberOfWeakBonds1,TimeToGenerateStructuralTree1[ns],"
+                                + "FileName2,NumberOfNucleotides2,NumberOfWeakBonds2,TimeToGenerateStructuralTree2[ns],"
+                                + "MaxNumberOfNucleotides1-2,ASAEditDistance,TimeToCalculateASAEditDistance[ns]");
             } else {
-                structuresStream.println("Num,FileName,NumberOfWeakBonds,TimeToGenerateStructuralRNATree[ns]");
+                structuresStream.println("Num,FileName,NumberOfWeakBonds,TimeToGenerateStructuralTree[ns]");
                 outputStream.println(
-                        "FileName1,NumberOfWeakBonds1,TimeToGenerateStructuralRNATree1[ns],"
-                                + "FileName2,NumberOfWeakBonds2,TimeToGenerateStructuralRNATree2[ns],"
-                                + "EditDistance,TimeToCalculateSTADistance[ns]");
+                        "FileName1,NumberOfWeakBonds1,TimeToGenerateStructuralTree1[ns],"
+                                + "FileName2,NumberOfWeakBonds2,TimeToGenerateStructuralTree2[ns],"
+                                + "ASAEditDistance,TimeToCalculateASAEditDistance[ns]");
             }
             // Load configuration file for costs
             ScoringFunction f = new ScoringFunction(configurationFileName);
