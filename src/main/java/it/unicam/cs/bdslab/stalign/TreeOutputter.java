@@ -3,6 +3,7 @@
  * 
  * Copyright (C) 2022 BioShape and Data Science Lab at the University of Camerino, Italy - 
  * http://www.emanuelamerelli.eu/bigdata/
+ * https://github.com/bdslab
  *  
  * This file is part of STAlign.
  * 
@@ -66,7 +67,7 @@ public class TreeOutputter {
     }
 
     /*
-     * Transform concatenation, crossing and nesting labels into the corresponding
+     * Transform crossing, meet, concatenation, diamond, starting, ending, crossing and nesting labels into the corresponding
      * LaTeX math operators. Leave everything else unchanged.
      */
     private static String transformLabel(String label) {
@@ -76,6 +77,14 @@ public class TreeOutputter {
             String inLabel = inLabels[0].substring(1, inLabels[0].length());
             if (inLabel.equals(Operators.CONCATENATION_LABEL))
                 return "$(" + Operators.CONCATENATION_LABEL_LATEX + "," + inLabels[1] + "$";
+            if (inLabel.equals(Operators.MEETING_LABEL))
+                return "$(" + Operators.MEETING_LABEL_LATEX + "," + inLabels[1] + "$";
+            if (inLabel.equals(Operators.DIAMOND_LABEL))
+                return "$(" + Operators.DIAMOND_LABEL_LATEX + "," + inLabels[1] + "$";
+            if (inLabel.equals(Operators.STARTING_LABEL))
+                return "$(" + Operators.STARTING_LABEL_LATEX + "," + inLabels[1] + "$";
+            if (inLabel.equals(Operators.ENDING_LABEL))
+                return "$(" + Operators.ENDING_LABEL_LATEX + "," + inLabels[1] + "$";
             if (inLabel.equals(Operators.CROSSING_LABEL))
                 return "$(" + Operators.CROSSING_LABEL_LATEX + "," + inLabels[1] + "$";
             if (inLabel.equals(Operators.NESTING_LABEL))
@@ -85,6 +94,14 @@ public class TreeOutputter {
                 return "$" + Operators.ALGEBRAIC_TREE_ROOT_LABEL_LATEX + "$";
             if (label.equals(Operators.CONCATENATION_LABEL))
                 return "$" + Operators.CONCATENATION_LABEL_LATEX + "$";
+            if (label.equals(Operators.MEETING_LABEL))
+                return "$" + Operators.MEETING_LABEL_LATEX + "$";
+            if (label.equals(Operators.DIAMOND_LABEL))
+                return "$" + Operators.DIAMOND_LABEL_LATEX + "$";
+            if (label.equals(Operators.STARTING_LABEL))
+                return "$" + Operators.STARTING_LABEL_LATEX + "$";
+            if (label.equals(Operators.ENDING_LABEL))
+                return "$" + Operators.ENDING_LABEL_LATEX + "$";
             if (label.equals(Operators.CROSSING_LABEL))
                 return "$" + Operators.CROSSING_LABEL_LATEX + "$";
             if (label.equals(Operators.NESTING_LABEL))
@@ -126,7 +143,7 @@ public class TreeOutputter {
         // DFS visit
         StringBuffer stringTree = new StringBuffer();
         //stringTree.append(t.getValue().replace('(','[').replace(')',']').replace(',',' '));
-        String nodeValue = t.getValue().charAt(0) == 'H' ? "H" : t.getValue();
+        String nodeValue = t.getValue().charAt(0) == 'L' ? "L" : t.getValue();
         stringTree.append("\"" + nodeValue.replace("(","").replace(")","").replace(",", "") + "\"");
         if (t.getChildren().size() > 0) {
             stringTree.append("(");
@@ -146,7 +163,7 @@ public class TreeOutputter {
         // DFS visit
         StringBuffer stringTree = new StringBuffer();
         //stringTree.append(t.getValue().replace('(','[').replace(')',']').replace(',',' '));
-        String nodeValue = t.getValue().charAt(0) == 'H' ? "H" : t.getValue();
+        String nodeValue = t.getValue().charAt(0) == 'L' ? "L" : t.getValue();
         nodeValue = t.getValue().contains("CROS") ? "CROS" : nodeValue;
         stringTree.append("\"" + nodeValue.replace("(","").replace(")","").replace(",", "") + "\"");
         if (t.getChildren().size() > 0) {

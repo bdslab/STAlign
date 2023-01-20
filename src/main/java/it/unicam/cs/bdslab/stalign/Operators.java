@@ -3,6 +3,7 @@
  * 
  * Copyright (C) 2022 BioShape and Data Science Lab at the University of Camerino, Italy - 
  * http://www.emanuelamerelli.eu/bigdata/
+ * https://github.com/bdslab
  *  
  * This file is part of STAlign.
  * 
@@ -31,10 +32,14 @@ public interface Operators {
     String STARTING_LABEL = "START";
     String DIAMOND_LABEL = "DIAMOND";
     String ALGEBRAIC_TREE_ROOT_LABEL = "ROOT";
-    String HAIRPIN_LABEL = "H";
+    String HAIRPIN_LABEL = "L";
 
     String ALGEBRAIC_TREE_ROOT_LABEL_LATEX = "\\leftrightarrows";
     String CONCATENATION_LABEL_LATEX = "\\odot";
     String CROSSING_LABEL_LATEX = "\\Join";
     String NESTING_LABEL_LATEX = "\\Cap";
+    String MEETING_LABEL_LATEX = "\\curlyvee";
+    String ENDING_LABEL_LATEX = "\\rhd";
+    String STARTING_LABEL_LATEX = "\\lhd";
+    String DIAMOND_LABEL_LATEX = "\\diamond";
 }

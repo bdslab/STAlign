@@ -3,6 +3,7 @@
  * 
  * Copyright (C) 2022 BioShape and Data Science Lab at the University of Camerino, Italy - 
  * http://www.emanuelamerelli.eu/bigdata/
+ * https://github.com/bdslab
  *  
  * This file is part of STAlign.
  * 
