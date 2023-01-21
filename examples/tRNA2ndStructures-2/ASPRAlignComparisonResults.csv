@@ -1,0 +1,7 @@
+FileName1,NumberOfNucleotides1,NumberOfWeakBonds1,IsPseudoknotted1,TimeToGenerateStructuralRNATree1[ns],FileName2,NumberOfNucleotides2,NumberOfWeakBonds2,IsPseudoknotted2,TimeToGenerateStructuralRNATree2[ns],MaxNumberOfNucleotides1-2,ASPRADistance,TimeToCalculateASPRADistance[ns]
+"PDB_01147-2JR4.txt",17,6,No,298459,"PDB_01148-2JRG.txt",17,5,No,19750,17,200.0,2075792
+"PDB_01147-2JR4.txt",17,6,No,298459,"PDB_01149-2JRQ.txt",17,6,No,19875,17,0.0,462917
+"PDB_01147-2JR4.txt",17,6,No,298459,"PDB_01151-2JSG.txt",17,6,No,18375,17,0.0,387875
+"PDB_01148-2JRG.txt",17,5,No,19750,"PDB_01149-2JRQ.txt",17,6,No,19875,17,200.0,223500
+"PDB_01148-2JRG.txt",17,5,No,19750,"PDB_01151-2JSG.txt",17,6,No,18375,17,200.0,258292
+"PDB_01149-2JRQ.txt",17,6,No,19875,"PDB_01151-2JSG.txt",17,6,No,18375,17,0.0,259167

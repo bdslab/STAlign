@@ -1,0 +1,5 @@
+Num,FileName,NumberOfNucleotides,NumberOfWeakBonds,TimeToGenerateStructuralTree[ns]
+1,"2jr4.pdb",17,14,650667
+2,"2jrg.pdb",17,13,115291
+3,"2jrq.pdb",17,15,135500
+4,"2jsg.pdb",17,13,111875

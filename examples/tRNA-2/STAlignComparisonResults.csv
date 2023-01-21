@@ -1,0 +1,7 @@
+FileName1,NumberOfNucleotides1,NumberOfWeakBonds1,TimeToGenerateStructuralTree1[ns],FileName2,NumberOfNucleotides2,NumberOfWeakBonds2,TimeToGenerateStructuralTree2[ns],MaxNumberOfNucleotides1-2,ASADistance,TimeToCalculateASADistance[ns]
+"2jr4.pdb",17,14,650667,"2jrg.pdb",17,13,115291,17,300.0,22758584
+"2jr4.pdb",17,14,650667,"2jrq.pdb",17,15,135500,17,700.0,7643958
+"2jr4.pdb",17,14,650667,"2jsg.pdb",17,13,111875,17,300.0,4278250
+"2jrg.pdb",17,13,115291,"2jrq.pdb",17,15,135500,17,700.0,7285583
+"2jrg.pdb",17,13,115291,"2jsg.pdb",17,13,111875,17,100.0,3731417
+"2jrq.pdb",17,15,135500,"2jsg.pdb",17,13,111875,17,600.0,4835625
