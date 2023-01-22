@@ -55,7 +55,7 @@ Comma-separated values files "STAlignProcessedStructures.csv" and
 "STAlignComparisonResults.csv" are created in the folder "tRNA-1". The former 
 contains the description of all the biomolecules that were found and correctly 
 processed. The latter contains, for each pair of processed biomolecules, the ASA 
-Distance between the two correspondig structural trees and execution time 
+Distance between the two corresponding structural trees and execution time 
 information.
 
 
