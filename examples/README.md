@@ -82,7 +82,7 @@ memory error:
 The files STAlignComparisonResults.csv in each folder show that (mostly) all 
 the AAS are not equal, having an ASA distance greater than 0.
 
-## Aligning secondary structures of the three set of PDB files
+## Aligning secondary structures of the three sets of PDB files
 
 To determine the secondary Structure of the PDB of a given RNA molecule  
 the [RNApdbee 2.0 website](http://rnapdbee.cs.put.poznan.pl) can be used. 
