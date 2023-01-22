@@ -95,7 +95,7 @@ public class WorkbenchComparator {
         Option o10 = new Option("n","useconffile",true,"Use the specified configuration file instead of the default one");
         o10.setArgName("conf-file");
         options.addOption(o10);
-        Option o11 = new Option("fm","inputcustom",true,"Process the bond files in the given folder");
+        Option o11 = new Option("fm","inputcustom",true,"Process the AAS files in the given folder");
         o11.setArgName("input-folder");
         options.addOption(o11);
         Option o12 = new Option("cm","centerofmass",false,"Calculate the distance matrix with center of mass method");
@@ -103,7 +103,7 @@ public class WorkbenchComparator {
         Option o13 = new Option("t","threshold",true,"Set a threshold");
         o13.setArgName("threshold");
         options.addOption(o13);
-        Option o14 = new Option("edfm","editdistanceinputcustom",true,"Process the bond files in the given folder and calculate edit distance");
+        Option o14 = new Option("edfm","editdistanceinputcustom",true,"Process the AAS files in the given folder and calculate edit distance");
         o14.setArgName("input-folder");
         options.addOption(o14);
         Option o15 = new Option("edf","editdistanceinput",true,"Process the files in the given folder and calculate edit distance");

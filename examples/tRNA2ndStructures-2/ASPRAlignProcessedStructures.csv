@@ -1,5 +1,0 @@
-Num,FileName,NumberOfNucleotides,NumberOfWeakBonds,IsPseudoknotted,TimeToGenerateStructuralRNATree[ns]
-1,"PDB_01147-2JR4.txt",17,6,No,298459
-2,"PDB_01148-2JRG.txt",17,5,No,19750
-3,"PDB_01149-2JRQ.txt",17,6,No,19875
-4,"PDB_01151-2JSG.txt",17,6,No,18375
