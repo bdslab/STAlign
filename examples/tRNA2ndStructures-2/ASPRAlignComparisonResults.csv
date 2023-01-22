@@ -1,0 +1,7 @@
+FileName1,NumberOfNucleotides1,NumberOfWeakBonds1,IsPseudoknotted1,TimeToGenerateStructuralRNATree1[ns],FileName2,NumberOfNucleotides2,NumberOfWeakBonds2,IsPseudoknotted2,TimeToGenerateStructuralRNATree2[ns],MaxNumberOfNucleotides1-2,ASPRADistance,TimeToCalculateASPRADistance[ns]
+"2JR4-SS.txt",17,5,No,272666,"2JRG-SS.txt",17,5,No,18250,17,0.0,1928125
+"2JR4-SS.txt",17,5,No,272666,"2JRQ-SS.txt",17,5,No,20958,17,0.0,288083
+"2JR4-SS.txt",17,5,No,272666,"2JSG-SS.txt",17,5,No,16375,17,0.0,258083
+"2JRG-SS.txt",17,5,No,18250,"2JRQ-SS.txt",17,5,No,20958,17,0.0,255667
+"2JRG-SS.txt",17,5,No,18250,"2JSG-SS.txt",17,5,No,16375,17,0.0,202166
+"2JRQ-SS.txt",17,5,No,20958,"2JSG-SS.txt",17,5,No,16375,17,0.0,175250

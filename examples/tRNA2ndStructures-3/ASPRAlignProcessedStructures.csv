@@ -1,0 +1,7 @@
+Num,FileName,NumberOfNucleotides,NumberOfWeakBonds,IsPseudoknotted,TimeToGenerateStructuralRNATree[ns]
+1,"1GTR-SS.txt",74,20,Yes,499709
+2,"1GTS-SS.txt",74,20,Yes,73167
+3,"1QRT-SS.txt",75,20,Yes,82042
+4,"1QRU-SS.txt",75,20,Yes,65917
+5,"1QTQ-SS.txt",75,20,Yes,60750
+6,"2RD2-SS.txt",75,20,Yes,58833

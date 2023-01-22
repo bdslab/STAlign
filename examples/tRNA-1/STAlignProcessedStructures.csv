@@ -1,5 +1,5 @@
 Num,FileName,NumberOfNucleotides,NumberOfWeakBonds,TimeToGenerateStructuralTree[ns]
-1,"1o0b.pdb",604,534,80706333
-2,"1o0c.pdb",604,532,12418041
-3,"1zjw.pdb",604,531,15418166
-4,"2re8.pdb",604,531,7569667
+1,"1o0b.pdb",604,534,35691875
+2,"1o0c.pdb",604,532,14496834
+3,"1zjw.pdb",604,531,9978208
+4,"2re8.pdb",604,531,9346166

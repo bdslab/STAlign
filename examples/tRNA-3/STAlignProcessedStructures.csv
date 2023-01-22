@@ -1,0 +1,7 @@
+Num,FileName,NumberOfNucleotides,NumberOfWeakBonds,TimeToGenerateStructuralTree[ns]
+1,"1gtr.pdb",603,1431,51206083
+2,"1gts.pdb",603,1438,13647667
+3,"1qrt.pdb",603,1457,75566500
+4,"1qru.pdb",603,1455,73230167
+5,"1qtq.pdb",603,1447,21790333
+6,"2rd2.pdb",603,1448,68292333

@@ -45,12 +45,16 @@ and a minimum aligned tree is produced in file `examples/aas/example12aligned.te
 	
 ## Align a folder containing PDB files
 
-Command to process all the PDB files ran from folder containing the file 
-`STAlignWorkbench.jar` and the folder `examples`:
+We selected three sets of PDB files corresponding to a tRNA of Escherichia Coli. 
+We demonstrate that the distances computed by STAlign take into account spatial
+information and differentiate the molecules with a positive distance. On the 
+contrary, the alignment of secondary structures of the same molecules results in 
+equality. 
 
-	> java -jar STAlignWorkbench.jar -f examples/tRNA-1
+The following commands assumes that they are ran from a folder containing the files 
+`STAlign.jar`, `STAlignWorkbench.jar` and the sub-folder `examples`.
 
-Processes all the files in folder "tRNA-1". Each file is read as a PDB file. 
+Process all the files in folder "tRNA-1". Each file is read as a PDB file. 
 Comma-separated values files "STAlignProcessedStructures.csv" and 
 "STAlignComparisonResults.csv" are created in the folder "tRNA-1". The former 
 contains the description of all the biomolecules that were found and correctly 
@@ -58,9 +62,62 @@ processed. The latter contains, for each pair of processed biomolecules, the ASA
 Distance between the two corresponding structural trees and execution time 
 information.
 
+	> java -jar STAlignWorkbench.jar -f examples/tRNA-1
 
+Process all the files in folder "tRNA-2" using a threshold of 10 ångström (Å) 
+instead of the default of 4 Å because with the default threshold no bonds are detected.
 
+	> java -jar STAlignWorkbench.jar -t 10 -f examples/tRNA-2       
 
+Process all the files in folder "tRNA-3" using a threshold of 6 Å because with
+a higher threshold an out of memory error is generated as the molecule 1gtr.pdb 
+is too big and the corresponding tree cannot be generated. Moreover, the Java 
+virtual machine is instructed to augment the allocation of memory with the 
+option -Xmx6G. In this case the requested amount is 6GB of memory (4G in the 
+option). With less memory the alignment library StatAlign generates an out of 
+memory error:
 
+	> java -Xmx6G -jar STAlignWorkbench.jar -t 7 -f examples/tRNA-3
 
+The files STAlignComparisonResults.csv in each folder show that (mostly) all 
+the AAS are not equal, having an ASA distance greater than 0.
 
+## Aligning secondary structures of the three set of PDB files
+
+To determine the secondary Structure of the PDB of a given RNA molecule  
+the [RNApdbee 2.0 website](http://rnapdbee.cs.put.poznan.pl) can be used. 
+Proceed as follows:
+
+1.	upload the RNA 3D structure from PDB using the ID of the molecule (es. 1gtr)
+2.	select the first model only 
+3.	identify base pairs of the secondary structure using the DNA/DSSR algorithm 
+without including non-canonical base pairs 
+4.	resolve and encode the secondary structure topology using the Hybrid Algorithm
+5.	identify structural elements treating pseudoknots as paired residues
+
+We determined the secondary structures of all the tree sets of PDB files and we 
+put them in the following folders inside the folder `examples`:
+  * `tRNA2ndStructures-1` 
+  * `tRNA2ndStructures-2`
+  * `tRNA2ndStructures-3`
+
+ASPRAlign can be used to align these secondary structures. ASPRAlign can be 
+downloaded from <https://github.com/bdslab/aspralign>. We suppose that the file
+`ASPRAlignWorkbench.jar` is put in the same folder as above. 
+
+Compute the ASPRA distance between the secondary structures of all molecules in the
+folders `tRNA2ndStructures-1`, `tRNA2ndStructures-2` and `tRNA2ndStructures-3`. 
+Comma-separated values files "ASPRAlignProcessedStructures.csv" and 
+"ASPRAlignComparisonResults.csv" are created in the corresponding folders. 
+The former file contains the description of all the biomolecules that were found and 
+correctly processed. The latter one contains, for each pair of processed biomolecules, 
+the ASPRA Distance between the secondary structures and execution time information.
+
+	> java -jar ASPRAlignWorkbench.jar -f examples/tRNA2ndStructures-1
+
+	> java -jar ASPRAlignWorkbench.jar -f examples/tRNA2ndStructures-2
+	
+	> java -jar ASPRAlignWorkbench.jar -f examples/tRNA2ndStructures-3
+
+The files ASPRAlignComparisonResults.csv in each folder show that all 
+the secondary structures are equal, having ASPRA distance equal to 0.

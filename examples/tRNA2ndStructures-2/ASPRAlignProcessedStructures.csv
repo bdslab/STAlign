@@ -1,0 +1,5 @@
+Num,FileName,NumberOfNucleotides,NumberOfWeakBonds,IsPseudoknotted,TimeToGenerateStructuralRNATree[ns]
+1,"2JR4-SS.txt",17,5,No,272666
+2,"2JRG-SS.txt",17,5,No,18250
+3,"2JRQ-SS.txt",17,5,No,20958
+4,"2JSG-SS.txt",17,5,No,16375

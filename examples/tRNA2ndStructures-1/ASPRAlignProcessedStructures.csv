@@ -1,5 +1,5 @@
 Num,FileName,NumberOfNucleotides,NumberOfWeakBonds,IsPseudoknotted,TimeToGenerateStructuralRNATree[ns]
-1,"PDB_1O0B_00620.ct",74,22,No,1145458
-2,"PDB_1O0C_00621.ct",74,22,No,77959
-3,"PDB_1ZJW_00901.ct",74,22,No,64250
-4,"PDB_2RE8_01259.ct",74,23,No,61791
+1,"1O0B-SS.txt",75,20,Yes,476916
+2,"1O0C-SS.txt",75,20,Yes,74625
+3,"1ZJW-SS.txt",75,20,Yes,65292
+4,"2RE8-SS.txt",75,20,Yes,62291

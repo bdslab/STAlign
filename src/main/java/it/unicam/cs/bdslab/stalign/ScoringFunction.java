@@ -315,8 +315,8 @@ public class ScoringFunction implements TreeAlignLabelDistanceAsymmetric<String,
     }
 
     private boolean isHairpin(String s) {
-        String regexp = Operators.HAIRPIN_LABEL + "\\(\\d+\\,\\d+\\)";
-        return s.trim().matches(regexp);
+	String prefix = Operators.HAIRPIN_LABEL;
+	return s.trim().startsWith(prefix);
     }
 
     private boolean isGap(String s) {
@@ -338,11 +338,11 @@ public class ScoringFunction implements TreeAlignLabelDistanceAsymmetric<String,
             return true;
         return false;
     }
-
+    
     private boolean isCrossing(String s) {
-        String regexp = "\\(" + Operators.CROSSING_LABEL + "\\,\\d+\\)";
-        return s.trim().matches(regexp);
-    }
+ 	String prefix = "(" + Operators.CROSSING_LABEL;
+ 	return s.trim().startsWith(prefix);
+     }
 
     private boolean isOperator(String s) {
         return isConcOrNestingOrMeetOrStartOrDiamOrEnd(s) || isCrossing(s);

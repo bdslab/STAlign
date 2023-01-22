@@ -1,0 +1,5 @@
+# Source: RCSB Protein Data Bank 1QTQ, number of molecules: 1
+# The secondary structure annotation was obtained with 3DNA/DSSR without considering the non-canonical base pairs
+
+UgGGGUAUCGCCAAGCGGUAAGGCACCGGAUUCUGAUUCCGGCAUUCCGAGGUUCGAAUCCUCGUACCCCAGCCA
+.((((((..(((.....[...))).(((((.......))))).....(((((..]....))))))))))).....
