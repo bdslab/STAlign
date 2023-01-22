@@ -104,7 +104,7 @@ comparison results in file `cmpr.csv`. Instead of using
 `STAling-config.txt` default configuration file, use `my-config.txt` as
 configuration file.
 
-See file [examples/README.md](examples/README.md) for further examples of use.
+See folder [examples](examples) for further examples of use.
 
 ## Using STAlign
 
