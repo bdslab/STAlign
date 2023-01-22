@@ -73,11 +73,11 @@ Process all the files in folder "tRNA-3" using a threshold of 6 Å because with
 a higher threshold an out of memory error is generated as the molecule 1gtr.pdb 
 is too big and the corresponding tree cannot be generated. Moreover, the Java 
 virtual machine is instructed to augment the allocation of memory with the 
-option -Xmx6G. In this case the requested amount is 6GB of memory (4G in the 
+option -Xmx6G. In this case the requested amount is 6GB of memory (6G in the 
 option). With less memory the alignment library StatAlign generates an out of 
 memory error:
 
-	> java -Xmx6G -jar STAlignWorkbench.jar -t 7 -f examples/tRNA-3
+	> java -Xmx6G -jar STAlignWorkbench.jar -t 6 -f examples/tRNA-3
 
 The files STAlignComparisonResults.csv in each folder show that (mostly) all 
 the AAS are not equal, having an ASA distance greater than 0.
