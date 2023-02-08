@@ -2,6 +2,7 @@ package it.unicam.cs.bdslab.stalign;
 import fr.orsay.lri.varna.models.treealign.AlignedNode;
 import fr.orsay.lri.varna.models.treealign.Tree;
 import fr.orsay.lri.varna.models.treealign.TreeAlignException;
+import org.apache.commons.io.FilenameUtils;
 import org.biojava.nbio.structure.Structure;
 import org.biojava.nbio.structure.StructureException;
 import org.biojava.nbio.structure.StructureIO;
@@ -91,17 +92,27 @@ class ComparisonTest {
                 ArrayList<Pair<Integer>> parsedBonds = TertiaryStructureBondsOptionalSequenceFileReader.readBondsList(inputFolder + "/" + file.getName());
                 Tree<String> parsedTree = createStructuralTree(parsedBonds);
                 for (File file2 : fileList) {
-                    ArrayList<Pair<Integer>> parsedBonds2 = TertiaryStructureBondsOptionalSequenceFileReader.readBondsList(inputFolder + "/" + file2.getName());
-                    Tree<String> parsedTree2 = createStructuralTree(parsedBonds2);
-                    //Starting comparison
-                    outputFile.write("Comparing: " + file.getName() + " with " + file2.getName());
-                    //Creating trees
-                    outputFile.write("\n" + file.getName() + " tree: " + TreeOutputter.treeToString(parsedTree));
-                    outputFile.write("\n" + file2.getName() + " tree: " + TreeOutputter.treeToString(parsedTree2));
-                    //Comparison & distance
-                    outputFile.write("\n" + file.getName() + " aligned with " + file2.getName() + ": ");
-                    double distance = compareTreesAndGetDistance(parsedTree,parsedTree2,f, outputFile);
-                    outputFile.write("\nDistance between " + file.getName() + " and " + file2.getName() + "= "+ distance + "\n\n");
+                    if (!file.isDirectory()) {
+                        if (!file.isHidden()) {
+                            if ((FilenameUtils.getExtension(file.getName()).equals("txt"))) {
+                                ArrayList<Pair<Integer>> parsedBonds2 = TertiaryStructureBondsOptionalSequenceFileReader.readBondsList(inputFolder + "/" + file2.getName());
+                                Tree<String> parsedTree2 = createStructuralTree(parsedBonds2);
+                                //Starting comparison
+                                outputFile.write("Comparing: " + file.getName() + " with " + file2.getName());
+                                //Creating trees
+                                outputFile.write("\n" + file.getName() + " tree: " + TreeOutputter.treeToString(parsedTree));
+                                outputFile.write("\n" + file2.getName() + " tree: " + TreeOutputter.treeToString(parsedTree2));
+                                //Comparison & distance
+                                outputFile.write("\n" + file.getName() + " aligned with " + file2.getName() + ": ");
+                                double distance = compareTreesAndGetDistance(parsedTree, parsedTree2, f, outputFile);
+                                outputFile.write("\nDistance between " + file.getName() + " and " + file2.getName() + "= " + distance + "\n\n");
+                            } else
+                                System.err.println("WARNING: Skipping unrecognized file " + file.getName() + " ...");
+                        } else
+                            System.err.println("WARNING: Skipping hidden file " + file.getName() + " ...");
+                    }
+                    else
+                        System.err.println("WARNING: Skipping subfolder " + file.getName() + " ...");
                 }
             }
         }
