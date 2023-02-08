@@ -44,6 +44,9 @@ public class TERSAlignTree {
     private SecondaryStructure secondaryStructure;
     private Tree<String> structuralTree;
     private int sequenceLength;
+	private int[] c;
+	private int[] m;
+	private ArrayList<Integer>[] p;
 
     /**
      * Initializes a new structural tree builder for the tertiary structure
@@ -96,9 +99,8 @@ public class TERSAlignTree {
      */
     private void buildStructural() {
 
-	int[] m = new int[this.sequenceLength + 1];
-	int[] c = new int[this.sequenceLength + 1];
-	ArrayList<Integer>[] p;
+	this.m = new int[this.sequenceLength + 1];
+	this.c = new int[this.sequenceLength + 1];
 	// If there is a secondary structure
 	if (this.secondaryStructure != null) {
 	    p = secondaryStructure.getBondsList();
@@ -110,7 +112,7 @@ public class TERSAlignTree {
 	}
 
 	// initialize counting and meets array
-	initmc(m, c, p);
+	initmc(this.m, this.c, p);
 
 	// init indexes for later recursion call
 	int l = 1; // left index
@@ -141,14 +143,14 @@ public class TERSAlignTree {
 	ArrayList<Integer> meetIndexesList = new ArrayList<>();
 
 	// find meets in the new pseudoloop, if any
-	getMeetsInInterval(meetIndexesList, l, r, c, m, p);
+	getMeetsInInterval(meetIndexesList, l, r, c, p);
 
 	// create the root node of the structural RNA tree
 	Tree<String> t = new Tree<>();
 
 	// start the recursive construction of the structural RNA Tree on the
 	// node ct
-	recBuildStructural(t, meetIndexesList, zi, c, p, m, l, r);
+	recBuildStructural(t, meetIndexesList, zi, l, r);
 
 	// assign to the root of this tree
 	this.structuralTree = t;
@@ -156,8 +158,7 @@ public class TERSAlignTree {
     }
 
     private void recBuildStructural(Tree<String> ct,
-	    ArrayList<Integer> meetsInInterval, ArrayList<Interval> zi,
-	    int[] c, ArrayList<Integer>[] p, int[] m, int l, int r) {
+	    ArrayList<Integer> meetsInInterval, ArrayList<Interval> zi, int l, int r) {
 
 	assert c[l] >= 1 && c[r] == 0
 		: "Pseudoloop bounds error while parsing at [" + l + "," + r
@@ -168,42 +169,39 @@ public class TERSAlignTree {
 		|| !zi.isEmpty()) {
 	    int rl = 0;
 	    int lr = 0;
-	    // value inside c array's last position is different between left
-	    // and right substructures in case of a meet, so we proceed to
-	    // clone it
-	    int[] meetConcatC = c.clone();
-	    ArrayList<Integer>[] leftP = p;
-	    ArrayList<Integer>[] rightP = p;
+
+		int meetPoint = p[r].get(0);
+
+		ArrayList<Integer>originalPlPartnersValue = p[l];
+		ArrayList<Integer>originalPmPartnersValue = p[meetPoint];
+		ArrayList<Integer>originalPrPartnersValue = p[r];
+
+		ArrayList<Integer>[]filteredL = null;
+		ArrayList<Integer>[]filteredR = null;
+
+		boolean meetDetected = false;
+
 	    if (!meetsInInterval.isEmpty()
 		    && meetsInInterval.contains(p[r].get(0))) {
 		// meet case
 
-		int meetPoint = p[r].get(0);
+		meetDetected = true;
 
 		ct.setValue(Operators.MEETING_LABEL);
 
-		leftP = new ArrayList[p.length];
-		rightP = new ArrayList[p.length];
-		copyArrayOfArrayList(p, leftP);
-		copyArrayOfArrayList(p, rightP);
-		// filter every parent of l, m which is not between l and m
-		this.filterPartnerList(l, meetPoint, leftP);
-		// filter every parent of l, m which is not between m and r
-		this.filterPartnerList(meetPoint, r, rightP);
+		//filter every parent of l, m which is not between l and m
+		filteredL = getFilteredPartnerList(l,meetPoint);
+		//filter every parent of m, r which is not between m and r
+		filteredR = getFilteredPartnerList(meetPoint,r);
 
 		// set boundaries of the right pseudoloop and of the left
 		// pseudoloop
 		lr = meetPoint;
 		rl = meetPoint;
 
-		// when two pseudoloops are split by a meet, the last value of
-		// the left pseudoloop must be set to 0 since the hairpins
-		// starting from the meet point
-		// are not considered within the left pseudoloop context
-		meetConcatC[meetPoint] = 0;
-
 	    } else if (!zi.isEmpty()) {
 		// concat case
+
 		ct.setValue(Operators.CONCATENATION_LABEL);
 
 		// get rightmost zero interval
@@ -239,24 +237,79 @@ public class TERSAlignTree {
 
 	    // find zero intervals in the right and left pseudoloops, if any
 	    detectZeroIntervals(c, zirRight, rl, r);
-	    detectZeroIntervals(meetConcatC, zirLeft, l, lr);
+
+		int prevValue = c[p[r].get(0)];
+
+		// when two pseudoloops are split by a meet, the last value of
+		// the left pseudoloop must be set to 0 since the hairpins
+		// starting from the meet point
+		// are not considered within the left pseudoloop context
+
+		c[p[r].get(0)] = 0;
+
+		detectZeroIntervals(c, zirLeft, l, lr);
+
+		// take back the last value of the left pseudoloop to its original value
+		c[p[r].get(0)] = prevValue;
 
 	    // create two empty lists of meet indexes to detect meetings in
 	    // the right and left pseudoloops
 	    ArrayList<Integer> meetIndexesListRight = new ArrayList<>();
 	    ArrayList<Integer> meetIndexesListLeft = new ArrayList<>();
 
-	    // find meets in the right and left pseudoloops, if any
-	    getMeetsInInterval(meetIndexesListRight, rl, r, c, m, rightP);
-	    getMeetsInInterval(meetIndexesListLeft, l, lr, meetConcatC, m,
-		    leftP);
+		// apply the filtered partner list to the p array for the right meet substructure
+		if(meetDetected) {
+			p[meetPoint] = filteredR[0];
+			p[r] = filteredR[1];
+		}
 
-	    // recursive construction of the structural subTree on the right
-	    recBuildStructural(right, meetIndexesListRight, zirRight, c,
-		    rightP, m, rl, r);
+	    // find meets in the right and left pseudoloops, if any
+	    getMeetsInInterval(meetIndexesListRight, rl, r, c, p);
+
+		//the last value of the left pseudoloop must be set to 0
+		c[p[r].get(0)] = 0;
+
+		// apply the filtered partner list to the p array for the left meet substructure
+		if(meetDetected) {
+			p[r] = originalPrPartnersValue;
+			p[meetPoint] = filteredL[1];
+			p[l] = filteredL[0];
+		}
+
+		getMeetsInInterval(meetIndexesListLeft, l, lr, c,
+		    p); //TODO modificato back to meetconcat
+
+		// take back the last value of the left pseudoloop to its original value
+		c[p[r].get(0)] = prevValue;
+
+		// apply the filtered partner list to the p array for the right meet substructure
+		if(meetDetected) {
+			p[l] = originalPlPartnersValue;
+			p[meetPoint] = filteredR[0];
+			p[r] = filteredR[1];
+		}
+
+		// recursive construction of the structural subTree on the right
+	    recBuildStructural(right, meetIndexesListRight, zirRight, rl, r);
+
+		//the last value of the left pseudoloop must be set to 0
+		c[p[r].get(0)] = 0;
+
+		// apply the filtered partner list to the p array for the left meet substructure
+		if(meetDetected) {
+			p[r] = originalPrPartnersValue;
+			p[meetPoint] = filteredL[1];
+			p[l] = filteredL[0];
+		}
+
 	    // recursive construction of the structural subTree on the left
-	    recBuildStructural(left, meetIndexesListLeft, zirLeft,
-		    meetConcatC, leftP, m, l, lr);
+	    recBuildStructural(left, meetIndexesListLeft, zirLeft, l, lr);   //TODO modificato back to meetconcat
+
+		//take the splitting index's partners list to its original value
+		if(meetDetected) {
+			p[meetPoint] = originalPmPartnersValue;
+		}
+
 	} else {
 	    if (p[r].get(0) > l) {
 		// cross case
@@ -319,11 +372,11 @@ public class TERSAlignTree {
 		ArrayList<Integer> meetIndexesList = new ArrayList<>();
 
 		// find meets in the new pseudoloop, if any
-		getMeetsInInterval(meetIndexesList, l, rp, c, m, p);
+		getMeetsInInterval(meetIndexesList, l, rp, c, p);
 
 		// recursive construction of the structural subTree on the
 		// node rest
-		recBuildStructural(rest, meetIndexesList, zip, c, p, m, l,
+		recBuildStructural(rest, meetIndexesList, zip, l,
 			rp);
 
 	    } else {
@@ -392,11 +445,11 @@ public class TERSAlignTree {
 		    ArrayList<Integer> meetIndexesList = new ArrayList<>();
 
 		    // find meets in the new pseudoloop, if any
-		    getMeetsInInterval(meetIndexesList, lp, r, c, m, p);
+		    getMeetsInInterval(meetIndexesList, lp, r, c, p);
 
 		    // recursive construction of the structural subTree on the
 		    // node rest
-		    recBuildStructural(rest, meetIndexesList, zip, c, p, m,
+		    recBuildStructural(rest, meetIndexesList, zip,
 			    lp, r);
 
 		} else if (p[r].size() == 1 && p[p[r].get(0)].size() > 1
@@ -456,11 +509,11 @@ public class TERSAlignTree {
 		    ArrayList<Integer> meetIndexesList = new ArrayList<>();
 
 		    // find meets in the new pseudoloop, if any
-		    getMeetsInInterval(meetIndexesList, l, rp, c, m, p);
+		    getMeetsInInterval(meetIndexesList, l, rp, c, p);
 
 		    // recursive construction of the structural subTree on the
 		    // node rest
-		    recBuildStructural(rest, meetIndexesList, zip, c, p, m, l,
+		    recBuildStructural(rest, meetIndexesList, zip, l,
 			    rp);
 
 		} else if (p[r].size() > 1 && p[p[r].get(0)].size() > 1
@@ -515,11 +568,11 @@ public class TERSAlignTree {
 		    ArrayList<Integer> meetIndexesList = new ArrayList<>();
 
 		    // find meets in the new pseudoloop, if any
-		    getMeetsInInterval(meetIndexesList, l, r, c, m, p);
+		    getMeetsInInterval(meetIndexesList, l, r, c, p);
 
 		    // recursive construction of the structural subTree on the
 		    // node rest
-		    recBuildStructural(rest, meetIndexesList, zip, c, p, m, l,
+		    recBuildStructural(rest, meetIndexesList, zip, l,
 			    r);
 
 		} else {
@@ -594,11 +647,11 @@ public class TERSAlignTree {
 		    ArrayList<Integer> meetIndexesList = new ArrayList<>();
 
 		    // find meets in the new pseudoloop, if any
-		    getMeetsInInterval(meetIndexesList, lp, rp, c, m, p);
+		    getMeetsInInterval(meetIndexesList, lp, rp, c, p);
 
 		    // recursive construction of the structural subTree on the
 		    // node rest
-		    recBuildStructural(rest, meetIndexesList, zip, c, p, m,
+		    recBuildStructural(rest, meetIndexesList, zip,
 			    lp, rp);
 
 		}
@@ -606,48 +659,34 @@ public class TERSAlignTree {
 	}
     }
 
-    /*
-     * Creates a deep copy of Array of ArrayLists P
-     * 
-     * @param array source p array
-     * 
-     * @param copyArray destination p array
-     */
-    private void copyArrayOfArrayList(ArrayList<Integer>[] array,
-	    ArrayList<Integer>[] copyArray) {
-	for (int i = 0; i < array.length; i++) {
-	    if (!(array[i] == null))
-		copyArray[i] = new ArrayList<>(array[i]);
-	}
-    }
+	/*
+	 * Filters every parent of l and r which is not inside the interval l - r
+	 * @param l interval's starting index
+	 * @param r interval's ending index
+	 * @return array containing the filtered l partners list as the element in position 0 and the filtered r partners list in position 1
+	 */
+	private ArrayList<Integer>[] getFilteredPartnerList(int l, int r) {
 
-    /*
-     * Filters every parent of l and r which is not inside the interval l - r
-     * 
-     * @param l interval's starting index
-     * 
-     * @param r interval's ending index
-     * 
-     * @param p1 partners array
-     */
-    private void filterPartnerList(int l, int r, ArrayList<Integer>[] p1) {
-	for (int i = 0; i < p1[l].size(); i++) {
-	    Integer partnerIndex = p1[l].get(i);
-	    if (partnerIndex < l || partnerIndex > r) {
-		p1[l].remove(partnerIndex);
-		p1[partnerIndex].remove(Integer.valueOf(l));
-		i--;
-	    }
+		ArrayList<Integer>lPartners = new ArrayList<>(this.p[l]);
+		ArrayList<Integer>rPartners = new ArrayList<>(this.p[r]);
+
+		for(int i=0; i<lPartners.size(); i++){
+			Integer partnerIndex = lPartners.get(i);
+			if(partnerIndex < l || partnerIndex > r) {
+				lPartners.remove(partnerIndex);
+				i--;
+			}
+		}
+		for(int i=0; i<rPartners.size(); i++){
+			Integer partnerIndex = rPartners.get(i);
+			if(partnerIndex < l || partnerIndex > r) {
+				rPartners.remove(partnerIndex);
+				i--;
+			}
+		}
+		return new ArrayList[]{lPartners,rPartners};
 	}
-	for (int i = 0; i < p1[r].size(); i++) {
-	    Integer partnerIndex = p1[r].get(i);
-	    if (partnerIndex < l || partnerIndex > r) {
-		p1[r].remove(partnerIndex);
-		p1[partnerIndex].remove(Integer.valueOf(r));
-		i--;
-	    }
-	}
-    }
+
 
     /*
      * @param p partners array
@@ -674,7 +713,7 @@ public class TERSAlignTree {
      * found meets are put into the list meetList.
      */
     private void getMeetsInInterval(ArrayList<Integer> meetList, int l, int r,
-	    int[] c, int[] m, ArrayList<Integer>[] p) {
+	    int[] c, ArrayList<Integer>[] p) {
 	for (int i = l + 1; i < r; i++) {
 	    if (m[i] != 0) {
 		m[i] = p[i].size();
