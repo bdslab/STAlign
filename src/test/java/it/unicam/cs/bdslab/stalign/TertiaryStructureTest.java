@@ -4,9 +4,6 @@ import org.biojava.nbio.structure.*;
 import org.biojava.nbio.structure.io.PDBFileReader;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-
-import java.util.Arrays;
-
 import static org.junit.jupiter.api.Assertions.*;
 
 /**
@@ -26,7 +23,6 @@ class TertiaryStructureTest {
 
         tertiaryStructure.setDistanceMatrixCalculationMethod("Default");
         double[][] resultMatrix = tertiaryStructure.getDistanceMatrix();
-
 
         //Check matrix length
         assertEquals(204, resultMatrix.length, "Matrix length should be 204");
@@ -147,11 +143,11 @@ class TertiaryStructureTest {
         //Check if matrix length is right
         assertEquals(actualContactMatrix.length, tertiaryStructure.getDistanceMatrix().length, "contact matrix length should be the same as distance matrix length");
 
-        //First value should be equal to himself.
-        assertTrue(actualContactMatrix[0][0], "first value should always be equal to himself");
+        //First value should be false.
+        assertFalse(actualContactMatrix[0][0], "first value should always be false");
 
-        //Last value should be equal to himself.
-        assertTrue(actualContactMatrix[actualContactMatrix.length-1][actualContactMatrix.length-1], "last value should always be equal to himself");
+        //Last value should be false.
+        assertFalse(actualContactMatrix[actualContactMatrix.length-1][actualContactMatrix.length-1], "last value should always be false");
 
         //Should be true, distance is 3.7951...
         assertTrue(actualContactMatrix[0][1], "first with second value should be true, distance is 3.7951...");
@@ -203,11 +199,11 @@ class TertiaryStructureTest {
         //Check if matrix length is right
         assertEquals(actualContactMatrix.length, tertiaryStructure.getContactMatrix().length, "contact matrix length should be the same as distance matrix length");
 
-        //First value should be equal to himself.
-        assertTrue(actualContactMatrix[0][0], "first value should always be equal to himself");
+        //First value should be equal to false.
+        assertFalse(actualContactMatrix[0][0], "first value should always false");
 
-        //Last value should be equal to himself.
-        assertTrue(actualContactMatrix[actualContactMatrix.length-1][actualContactMatrix.length-1], "last value should always be equal to himself");
+        //Last value should be equal to false.
+        assertFalse(actualContactMatrix[actualContactMatrix.length-1][actualContactMatrix.length-1], "last value should always be false");
 
         //Should be true, distance is 4.6201...
         assertTrue(actualContactMatrix[0][1], "first with second value should be true, distance is 6.0022...");
@@ -259,11 +255,11 @@ class TertiaryStructureTest {
         //Check if matrix length is right
         assertEquals(actualContactMatrix.length, tertiaryStructure.getContactMatrix().length, "contact matrix length should be the same as distance matrix length");
 
-        //First value should be equal to himself.
-        assertTrue(actualContactMatrix[0][0], "first value should be equal to himself");
+        //First should be false
+        assertFalse(actualContactMatrix[0][0], "first value should be false");
 
-        //Last value should be equal to himself.
-        assertTrue(actualContactMatrix[actualContactMatrix.length-1][actualContactMatrix.length-1], "last value should be equal to himself");
+        //Last value should be equal false.
+        assertFalse(actualContactMatrix[actualContactMatrix.length-1][actualContactMatrix.length-1], "last value should be false");
 
         //Should be true, distance is 4.6201...
         assertTrue(actualContactMatrix[0][1], "first with second value should be true, distance is 4.6201...");
@@ -314,10 +310,10 @@ class TertiaryStructureTest {
         assertEquals(actualContactMatrix.length, tertiaryStructure.getContactMatrix().length, "contact matrix length should be the same as distance matrix length");
 
         //First value should be not be equal to himself.
-        assertTrue(actualContactMatrix[0][0], "first value should be equal to himself");
+        assertFalse(actualContactMatrix[0][0], "first value should be false");
 
-        //Last value should not be equal to himself.
-        assertTrue(actualContactMatrix[actualContactMatrix.length-1][actualContactMatrix.length-1], "last value should be equal to himself");
+        //Last value should not be false.
+        assertFalse(actualContactMatrix[actualContactMatrix.length-1][actualContactMatrix.length-1], "last value should be false");
 
         //Should be true
         assertTrue(actualContactMatrix[0][1], "first with second value should be true");
