@@ -356,40 +356,8 @@ public class TERSAlignTree {
 
 				// create the empty node for building the rest of the tree on
 				// the left
-				Tree<String> rest = new Tree<>();
-
-				// create hairpin subtree
-				Tree<String> h = new Tree<>();
-				h.setValue(Operators.HAIRPIN_LABEL + "(" + p[r].get(0) + ","
-						+ r + ")");
-
-				// update tree
-				ArrayList<Tree<String>> crossChilds = new ArrayList<>();
-				crossChilds.add(rest);
-				crossChilds.add(h);
-				ct.replaceChildrenListBy(crossChilds);
-
-				// create an empty list of zero intervals to detect
-				// concatenations
-				ArrayList<Interval> zip = new ArrayList<>();
-
-				// find zero intervals in the new pseudoloop, if any
-				detectZeroIntervals(c, zip, l, rp);
-
-				// remove partner indexes from both hairpin ending's p arrays
-				p[p[r].get(0)].remove(Integer.valueOf(r));
-				p[r].remove(p[r].get(0));
-
-				// create an empty list of meet indexes to detect meetings
-				ArrayList<Integer> meetIndexesList = new ArrayList<>();
-
-				// find meets in the new pseudoloop, if any
-				getMeetsInInterval(meetIndexesList, l, rp, c, p);
-
-				// recursive construction of the structural subTree on the
-				// node rest
-				recBuildStructural(rest, meetIndexesList, zip, l,
-						rp);
+				Tree<String> rest = getRestTree(ct, r);
+				detectAndProceed(l, r, rp, rest);
 
 			} else {
 				if (p[r].size() > 1 && p[p[r].get(0)].size() == 1
@@ -426,43 +394,8 @@ public class TERSAlignTree {
 							+ r + "]\nCounting array: "
 							+ Arrays.toString(c);
 
-					// create the empty node for building the rest of the tree
-					// on the left
-					Tree<String> rest = new Tree<>();
-
-					// create hairpin subtree
-					Tree<String> h = new Tree<>();
-					h.setValue(Operators.HAIRPIN_LABEL + "(" + p[r].get(0)
-							+ "," + r + ")");
-
-					// update tree
-					ArrayList<Tree<String>> endChild = new ArrayList<>();
-					endChild.add(rest);
-					endChild.add(h);
-					ct.replaceChildrenListBy(endChild);
-
-					// create an empty list of zero intervals to detect
-					// concatenations
-					ArrayList<Interval> zip = new ArrayList<>();
-
-					// find zero intervals in the new pseudoloop, if any
-					detectZeroIntervals(c, zip, lp, r);
-
-					// remove partner indexes from both hairpin ending's p
-					// arrays
-					p[p[r].get(0)].remove(Integer.valueOf(r));
-					p[r].remove(p[r].get(0));
-
-					// create an empty list of meet indexes to detect meetings
-					ArrayList<Integer> meetIndexesList = new ArrayList<>();
-
-					// find meets in the new pseudoloop, if any
-					getMeetsInInterval(meetIndexesList, lp, r, c, p);
-
-					// recursive construction of the structural subTree on the
-					// node rest
-					recBuildStructural(rest, meetIndexesList, zip,
-							lp, r);
+					Tree<String> rest = getRestTree(ct, r);
+					detectAndProceed(lp, r, r, rest);
 
 				} else if (p[r].size() == 1 && p[p[r].get(0)].size() > 1
 						&& p[r].get(0) == l) {
@@ -492,41 +425,8 @@ public class TERSAlignTree {
 
 					// create the empty node for building the rest of the tree
 					// on the left
-					Tree<String> rest = new Tree<>();
-
-					// create hairpin subtree
-					Tree<String> h = new Tree<>();
-					h.setValue(Operators.HAIRPIN_LABEL + "(" + p[r].get(0)
-							+ "," + r + ")");
-
-					// update tree
-					ArrayList<Tree<String>> startChids = new ArrayList<>();
-					startChids.add(rest);
-					startChids.add(h);
-					ct.replaceChildrenListBy(startChids);
-
-					// create an empty list of zero intervals to detect
-					// concatenations
-					ArrayList<Interval> zip = new ArrayList<>();
-
-					// find zero intervals in the new pseudoloop, if any
-					detectZeroIntervals(c, zip, l, rp);
-
-					// remove partner indexes from both hairpin ending's p
-					// arrays
-					p[p[r].get(0)].remove(Integer.valueOf(r));
-					p[r].remove(p[r].get(0));
-
-					// create an empty list of meet indexes to detect meetings
-					ArrayList<Integer> meetIndexesList = new ArrayList<>();
-
-					// find meets in the new pseudoloop, if any
-					getMeetsInInterval(meetIndexesList, l, rp, c, p);
-
-					// recursive construction of the structural subTree on the
-					// node rest
-					recBuildStructural(rest, meetIndexesList, zip, l,
-							rp);
+					Tree<String> rest = getRestTree(ct, r);
+					detectAndProceed(l, r, rp, rest);
 
 				} else if (p[r].size() > 1 && p[p[r].get(0)].size() > 1
 						&& p[r].get(0) == l) {
@@ -551,41 +451,8 @@ public class TERSAlignTree {
 
 					// create the empty node for building the rest of the tree
 					// on the left
-					Tree<String> rest = new Tree<>();
-
-					// create hairpin subtree
-					Tree<String> h = new Tree<>();
-					h.setValue(Operators.HAIRPIN_LABEL + "(" + p[r].get(0)
-							+ "," + r + ")");
-
-					// update tree
-					ArrayList<Tree<String>> diamondChilds = new ArrayList<>();
-					diamondChilds.add(rest);
-					diamondChilds.add(h);
-					ct.replaceChildrenListBy(diamondChilds);
-
-					// create an empty list of zero intervals to detect
-					// concatenations
-					ArrayList<Interval> zip = new ArrayList<>();
-
-					// find zero intervals in the new pseudoloop, if any
-					detectZeroIntervals(c, zip, l, r);
-
-					// remove partner indexes from both hairpin ending's p
-					// arrays
-					p[p[r].get(0)].remove(Integer.valueOf(r));
-					p[r].remove(p[r].get(0));
-
-					// create an empty list of meet indexes to detect meetings
-					ArrayList<Integer> meetIndexesList = new ArrayList<>();
-
-					// find meets in the new pseudoloop, if any
-					getMeetsInInterval(meetIndexesList, l, r, c, p);
-
-					// recursive construction of the structural subTree on the
-					// node rest
-					recBuildStructural(rest, meetIndexesList, zip, l,
-							r);
+					Tree<String> rest = getRestTree(ct, r);
+					detectAndProceed(l, r, r, rest);
 
 				} else {
 					// nest case
@@ -630,45 +497,53 @@ public class TERSAlignTree {
 
 					// create the empty node for building the rest of the tree
 					// on the left
-					Tree<String> rest = new Tree<>();
-
-					// create hairpin subtree
-					Tree<String> h = new Tree<>();
-					h.setValue(Operators.HAIRPIN_LABEL + "(" + p[r].get(0)
-							+ "," + r + ")");
-
-					// update tree
-					ArrayList<Tree<String>> nestChilds = new ArrayList<>();
-					nestChilds.add(rest);
-					nestChilds.add(h);
-					ct.replaceChildrenListBy(nestChilds);
-
-					// create an empty list of zero intervals to detect
-					// concatenations
-					ArrayList<Interval> zip = new ArrayList<>();
-
-					// find zero intervals in the new pseudoloop, if any
-					detectZeroIntervals(c, zip, lp, rp);
-
-					// remove partner indexes from both hairpin ending's p
-					// arrays
-					p[p[r].get(0)].remove(Integer.valueOf(r));
-					p[r].remove(p[r].get(0));
-
-					// create an empty list of meet indexes to detect meetings
-					ArrayList<Integer> meetIndexesList = new ArrayList<>();
-
-					// find meets in the new pseudoloop, if any
-					getMeetsInInterval(meetIndexesList, lp, rp, c, p);
-
-					// recursive construction of the structural subTree on the
-					// node rest
-					recBuildStructural(rest, meetIndexesList, zip,
-							lp, rp);
-
+					Tree<String> rest = getRestTree(ct, r);
+					detectAndProceed(lp, r, rp, rest);
 				}
 			}
 		}
+	}
+
+	private Tree<String> getRestTree(Tree<String> ct, int r) {
+		// create the empty node for building the rest of the tree
+		// on the left
+		Tree<String> rest = new Tree<>();
+
+		// create hairpin subtree
+		Tree<String> h = new Tree<>();
+		h.setValue(Operators.HAIRPIN_LABEL + "(" + p[r].get(0)
+				+ "," + r + ")");
+
+		// update tree
+		ArrayList<Tree<String>> endChild = new ArrayList<>();
+		endChild.add(rest);
+		endChild.add(h);
+		ct.replaceChildrenListBy(endChild);
+		return rest;
+	}
+
+	private void detectAndProceed(int l, int r, int rp, Tree<String> rest){
+
+		// create an empty list of zero intervals to detect
+		// concatenations
+		ArrayList<Interval> zip = new ArrayList<>();
+
+		// find zero intervals in the new pseudoloop, if any
+		detectZeroIntervals(c, zip, l, rp);
+
+		// remove partner indexes from both hairpin ending's p arrays
+		p[p[r].get(0)].remove(Integer.valueOf(r));
+		p[r].remove(p[r].get(0));
+
+		// create an empty list of meet indexes to detect meetings
+		ArrayList<Integer> meetIndexesList = new ArrayList<>();
+
+		// find meets in the new pseudoloop, if any
+		getMeetsInInterval(meetIndexesList, l, rp, c, p);
+
+		// recursive construction of the structural subTree on the
+		// node rest
+		recBuildStructural(rest, meetIndexesList, zip, l, rp);
 	}
 
 	/*
