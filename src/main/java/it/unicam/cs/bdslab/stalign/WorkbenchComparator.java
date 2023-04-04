@@ -109,6 +109,12 @@ public class WorkbenchComparator {
         Option o15 = new Option("edf","editdistanceinput",true,"Process the files in the given folder and calculate edit distance");
         o15.setArgName("input-folder");
         options.addOption(o15);
+        Option o16 = new Option("tf","treesfolder",true,"Produce the structural RNA/Protein trees corresponding to the PDB files in the given folder");
+        o16.setArgName("input-folder");
+        options.addOption(o16);
+        Option o17 = new Option("tfm","treesfoldercustom",true,"Produce the structural RNA/Protein trees corresponding to the custom files in the given folder");
+        o17.setArgName("input-folder");
+        options.addOption(o17);
 
         // Parse command line
         HelpFormatter formatter = new HelpFormatter();
@@ -458,6 +464,177 @@ public class WorkbenchComparator {
             outputStream.close();
             return;
         } // End Option f
+
+        // Manage option tf and tfm
+        if (cmd.hasOption("tf") || cmd.hasOption("tfm")) {
+            boolean custom = cmd.hasOption("tfm");
+            // Process a folder
+            // Get folder file from command line
+            File inputDirectory;
+            if(custom)
+                inputDirectory = new File(cmd.getOptionValue("tfm"));
+            else
+                inputDirectory = new File(cmd.getOptionValue("tf"));
+            // Variables for counting execution time
+            long startTimeNano;
+            long elapsedTimeNano;
+            // Maps for holding all the structures to be processed and their associated
+            // processing time
+            Map<File, TERSAlignTree> structures = new HashMap<>();
+            Map<File, Long> structuresProcessingTime = new HashMap<>();
+            // List for holding all the structures files
+            List<File> structuresList = new ArrayList<>();
+            // Set of skipped files
+            Set<File> skippedFiles = new HashSet<>();
+            int numStructures = 1;
+
+            // Process input files
+            if (!inputDirectory.isDirectory()) {
+                System.err.println("ERROR: Input file " + cmd.getOptionValue("tf") + " is not a folder");
+                System.exit(1);
+            }
+            File[] fs = inputDirectory.listFiles();
+            // Filter only files and put them in the list
+            for (File file : fs)
+                if (!file.isDirectory())
+                    if (!file.isHidden())
+                        if((FilenameUtils.getExtension(file.getName()).equals("pdb") && !custom) || (FilenameUtils.getExtension(file.getName()).equals("txt") && custom))
+                            structuresList.add(file);
+                        else
+                            System.err.println("WARNING: Skipping unrecognized file " + file.getName() + " ...");
+                    else
+                        System.err.println("WARNING: Skipping hidden file " + file.getName() + " ...");
+                else
+                    System.err.println("WARNING: Skipping subfolder " + file.getName() + " ...");
+
+            // Order files to be processed
+            Collections.sort(structuresList);
+
+            // Output files creation
+            PrintStream outputStream = null;
+
+            String outputStreamName = inputDirectory.getAbsolutePath() + "/" + "STAlignTreeGeneration.csv";
+
+            // Manage option "o"
+            if (cmd.hasOption("o")) {
+                String[] names = cmd.getOptionValues("o");
+                outputStreamName = names[0];
+            }
+
+            try {
+                outputStream = new PrintStream(outputStreamName);
+            } catch (FileNotFoundException e) {
+                System.err.println("ERROR: creation of output file " + outputStreamName + " failed");
+                System.exit(3);
+            }
+            // Write column names on the csv output files
+            if(!custom) {
+                outputStream.println(
+                        "FileName1,NumberOfNucleotides1,NumberOfWeakBonds1,TimeToGenerateStructuralTree1[ns],"
+                                + "OccupiedBitsInMemory,NumberOfMeets,NumberOfConcats,TreeHeight,"
+                                + "TreeWidth," + "Status");
+            } else {
+                outputStream.println(
+                        "FileName1,NumberOfNucleotides1,NumberOfWeakBonds1,TimeToGenerateStructuralTree1[ns],"
+                                + "OccupiedBitsInMemory,NumberOfMeets,NumberOfConcats,TreeHeight,"
+                                + "TreeWidth," + "Status");
+            }
+
+            // Main Loop
+            ListIterator<File> extIt = structuresList.listIterator();
+            while (extIt.hasNext()) {
+                // Compare the next element with all the subsequent elements
+                int currentExtIndex = extIt.nextIndex();
+                // Process File 1
+                File f1 = extIt.next();
+                // Check if skipped
+                if (skippedFiles.contains(f1))
+                    // skip this file
+                    continue;
+
+                // Retrieve the Structural RNA Tree for the structure 1
+                TERSAlignTree st1;
+                Tree<String> t1 = null;
+
+                // Parse the input file f1 for the secondary structure
+                TertiaryStructure tertiaryStructure1;
+                Structure struc;
+                try {
+                    if(!custom) {
+                        PDBFileReader pdbreader = new PDBFileReader();
+                        struc = pdbreader.getStructure(f1.getPath());
+                        tertiaryStructure1 = new TertiaryStructure(struc);
+                    } else {
+                        struc = StructureIO.getStructure("3mge");
+                        tertiaryStructure1 = new TertiaryStructure(struc);
+                        tertiaryStructure1.setBondList(TertiaryStructureBondsOptionalSequenceFileReader.readBondsList(f1.getPath()));
+                    }
+                } catch (Exception e) {
+                    System.err.println("WARNING: Skipping file " + f1.getName() + " ... " + e.getMessage());
+                    // skip this structure
+                    skippedFiles.add(f1);
+                    continue;
+                }
+
+                if (cmd.hasOption("t")) {
+                    double threshold = Double.parseDouble(cmd.getOptionValue("t"));
+                    tertiaryStructure1.setThreshold(threshold);
+                }
+
+                //manage option cm
+                if(cmd.hasOption("cm"))
+                    tertiaryStructure1.setDistanceMatrixCalculationMethod("centerofmass");
+
+                String status = "Calculated";
+
+                // Create the Structural RNA Tree and put the object into the map
+                st1 = new TERSAlignTree(tertiaryStructure1);
+                if(custom)
+                    st1.setSequenceLength(calculateLastSequenceIndex(tertiaryStructure1.getBondList()) + 1);
+                // Build Structural RNA Tree and measure building time
+                startTimeNano = System.nanoTime();
+                long m0 = 0;
+                long m1 = 0;
+                try {
+                    m0 = Runtime.getRuntime().freeMemory();
+                    t1 = st1.getStructuralTree();
+                    m1 = Runtime.getRuntime().freeMemory();
+                }catch (StackOverflowError e){
+                    status = "Overflow";
+                    System.err.println("The molecule in file " + f1.getName() + " is too big, can't generate the associated tree");
+                }
+
+                elapsedTimeNano = System.nanoTime() - startTimeNano;
+
+                TERSAlignTree.TreeFeatures st1features = new TERSAlignTree.TreeFeatures();
+
+                long usedMemory = m0 - m1;
+
+                if(t1 != null)
+                    st1features = st1.getTreeFeatures();
+
+                // Insert Object in maps
+                structures.put(f1, st1);
+                structuresProcessingTime.put(f1, elapsedTimeNano);
+                // Output values in the structures output file
+                outputStream.println(f1.getName() + "\","
+                        + st1.getTertiaryStructure().getSequence().length() + ","
+                        + st1.getTertiaryStructure().getBondList().size() + ","
+                        + elapsedTimeNano + ","
+                        + usedMemory + ","
+                        + st1features.getTotalMeetNumber() + ","
+                        + st1features.getTotalConcatNumber() + ","
+                        + st1features.getTreeHeight() + ","
+                        + st1features.getTreeWidth() + "," + status);
+                numStructures++;
+
+                // End of External Loop
+            }
+
+            // Close streams
+            outputStream.close();
+            return;
+        } // End Option
 
 
         // Manage option ed

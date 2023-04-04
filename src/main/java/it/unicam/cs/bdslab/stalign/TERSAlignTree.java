@@ -768,6 +768,131 @@ public class TERSAlignTree {
 		return this.secondaryStructure;
 	}
 
+	/* Function to get the maximum width of a binary tree*/
+	int getMaxWidth(Tree<String> node)
+	{
+		int maxWidth = 0;
+		int width;
+		int h = height(node);
+		int i;
+
+        /* Get width of each level and compare
+           the width with maximum width so far */
+		for (i = 1; i <= h; i++) {
+			width = getWidth(node, i);
+			if (width > maxWidth)
+				maxWidth = width;
+		}
+
+		return maxWidth;
+	}
+
+	/* Get width of a given level */
+	int getWidth(Tree<String> node, int level)
+	{
+		if (node == null || node.getChildren().size() < 2)
+			return 0;
+
+		if (level == 1)
+			return 1;
+		else if (level > 1)
+			return getWidth(node.getChildren().get(0), level - 1)
+					+ getWidth(node.getChildren().get(1), level - 1);
+		return 0;
+	}
+
+	/* UTILITY FUNCTIONS */
+
+	/* Compute the "height" of a tree -- the number of
+     nodes along the longest path from the root node
+     down to the farthest leaf node.*/
+	int height(Tree<String> node)
+	{
+		if (node == null || node.getChildren().size() < 2)
+			return 0;
+
+		/* compute the height of each subtree */
+		int lHeight = height(node.getChildren().get(0));
+		int rHeight = height(node.getChildren().get(1));
+
+		/* use the larger one */
+		return (lHeight > rHeight) ? (lHeight + 1)
+				: (rHeight + 1);
+	}
+
+	public TreeFeatures getTreeFeatures(){
+		TreeFeatures thisTreeFeatures = new TreeFeatures();
+		//TODO traversing dell'albero in ampiezza e per ogni nodo visitato conta il numero di byte allocati, partendo dalla radice
+		for(Tree<String>currentNode : this.structuralTree) {
+			if (currentNode.getValue().equals(Operators.CONCATENATION_LABEL))
+				thisTreeFeatures.setTotalConcatNumber(thisTreeFeatures.getTotalConcatNumber() + 1);
+			if (currentNode.getValue().equals(Operators.MEETING_LABEL))
+				thisTreeFeatures.setTotalMeetNumber(thisTreeFeatures.getTotalMeetNumber() + 1);
+		}
+		thisTreeFeatures.setTreeHeight(height(this.structuralTree));
+		thisTreeFeatures.setTreeWidth(getMaxWidth(this.structuralTree));
+
+		return thisTreeFeatures;
+	}
+
+	public static class TreeFeatures{
+
+		private int totalBitsOccupied;
+		private int totalConcatNumber;
+		private int totalMeetNumber;
+		private int treeHeight;
+		private int treeWidth;
+
+		public TreeFeatures(){
+			totalBitsOccupied = 0;
+			totalConcatNumber = 0;
+			totalMeetNumber = 0;
+			treeHeight = 0;
+			treeWidth = 0;
+		}
+
+
+		public int getTotalBitsOccupied() {
+			return totalBitsOccupied;
+		}
+
+		public void setTotalBitsOccupied(int totalBitsOccupied) {
+			this.totalBitsOccupied = totalBitsOccupied;
+		}
+
+		public int getTotalConcatNumber() {
+			return totalConcatNumber;
+		}
+
+		public void setTotalConcatNumber(int totalConcatNumber) {
+			this.totalConcatNumber = totalConcatNumber;
+		}
+
+		public int getTotalMeetNumber() {
+			return totalMeetNumber;
+		}
+
+		public void setTotalMeetNumber(int totalMeetNumber) {
+			this.totalMeetNumber = totalMeetNumber;
+		}
+
+		public int getTreeHeight() {
+			return treeHeight;
+		}
+
+		public void setTreeHeight(int treeHeight) {
+			this.treeHeight = treeHeight;
+		}
+
+		public int getTreeWidth() {
+			return treeWidth;
+		}
+
+		public void setTreeWidth(int treeWidth) {
+			this.treeWidth = treeWidth;
+		}
+	}
+
 	/*
 	 * Service class for holding zero intervals.
 	 */

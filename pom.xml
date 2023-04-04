@@ -18,7 +18,7 @@
                     <archive>
                         <manifest>
                             <addClasspath>true</addClasspath>
-                            <mainClass>it.unicam.cs.bdslab.tersaling.MainComparator</mainClass>
+                            <mainClass>it.unicam.cs.bdslab.stalign.MainComparator</mainClass>
                         </manifest>
                     </archive>
                     <descriptorRefs>
@@ -42,7 +42,7 @@
                     <archive>
                         <manifest>
                             <addClasspath>true</addClasspath>
-                            <mainClass>it.unicam.cs.bdslab.tersaling.MainComparator</mainClass>
+                            <mainClass>it.unicam.cs.bdslab.stalign.MainComparator</mainClass>
                         </manifest>
                     </archive>
                 </configuration>
