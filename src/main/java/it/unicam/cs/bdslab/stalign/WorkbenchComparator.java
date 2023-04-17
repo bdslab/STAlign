@@ -56,6 +56,7 @@ import org.apache.commons.io.FilenameUtils;
 import org.biojava.nbio.structure.Structure;
 import org.biojava.nbio.structure.StructureIO;
 import org.biojava.nbio.structure.contact.Pair;
+import org.biojava.nbio.structure.io.CifFileReader;
 import org.biojava.nbio.structure.io.PDBFileReader;
 
 /**
@@ -109,7 +110,7 @@ public class WorkbenchComparator {
         Option o15 = new Option("edf","editdistanceinput",true,"Process the files in the given folder and calculate edit distance");
         o15.setArgName("input-folder");
         options.addOption(o15);
-        Option o16 = new Option("tf","treesfolder",true,"Produce the structural RNA/Protein trees corresponding to the PDB files in the given folder");
+        Option o16 = new Option("tf","treesfolder",true,"Produce the structural RNA/Protein trees corresponding to the PDB/CIF files in the given folder");
         o16.setArgName("input-folder");
         options.addOption(o16);
         Option o17 = new Option("tfm","treesfoldercustom",true,"Produce the structural RNA/Protein trees corresponding to the custom files in the given folder");
@@ -207,7 +208,7 @@ public class WorkbenchComparator {
             for (File file : fs)
                 if (!file.isDirectory())
                     if (!file.isHidden())
-                        if((FilenameUtils.getExtension(file.getName()).equals("pdb") && !custom) || (FilenameUtils.getExtension(file.getName()).equals("txt") && custom))
+                        if((FilenameUtils.getExtension(file.getName()).equals("pdb") && !custom) || (FilenameUtils.getExtension(file.getName()).equals("cif") && !custom) || (FilenameUtils.getExtension(file.getName()).equals("txt") && custom))
                             structuresList.add(file);
                         else
                             System.err.println("WARNING: Skipping unrecognized file " + file.getName() + " ...");
@@ -279,8 +280,14 @@ public class WorkbenchComparator {
                     Structure struc;
                     try {
                         if(!custom) {
-                            PDBFileReader pdbreader = new PDBFileReader();
-                            struc = pdbreader.getStructure(f1.getPath());
+                            if(FilenameUtils.getExtension(f1.getName()).equals("cif")){
+                                CifFileReader cifFileReader = new CifFileReader();
+                                struc = cifFileReader.getStructure(f1.getPath());
+                            }
+                            else{
+                                PDBFileReader pdbreader = new PDBFileReader();
+                                struc = pdbreader.getStructure(f1.getPath());
+                            }
                             tertiaryStructure1 = new TertiaryStructure(struc);
                         } else {
                             struc = StructureIO.getStructure("3mge");
@@ -361,8 +368,14 @@ public class WorkbenchComparator {
                         Structure struc2;
                         try {
                             if(!custom) {
-                                PDBFileReader pdbreader = new PDBFileReader();
-                                struc2 = pdbreader.getStructure(f2.getPath());
+                                if(FilenameUtils.getExtension(f2.getName()).equals("cif")){
+                                    CifFileReader cifFileReader = new CifFileReader();
+                                    struc2 = cifFileReader.getStructure(f2.getPath());
+                                }
+                                else{
+                                    PDBFileReader pdbreader = new PDBFileReader();
+                                    struc2 = pdbreader.getStructure(f2.getPath());
+                                }
                                 tertiaryStructure2 = new TertiaryStructure(struc2);
                             } else {
                                 struc2 = StructureIO.getStructure("3mge");
@@ -498,7 +511,7 @@ public class WorkbenchComparator {
             for (File file : fs)
                 if (!file.isDirectory())
                     if (!file.isHidden())
-                        if((FilenameUtils.getExtension(file.getName()).equals("pdb") && !custom) || (FilenameUtils.getExtension(file.getName()).equals("txt") && custom))
+                        if((FilenameUtils.getExtension(file.getName()).equals("pdb") && !custom) || (FilenameUtils.getExtension(file.getName()).equals("cif") && !custom) || (FilenameUtils.getExtension(file.getName()).equals("txt") && custom))
                             structuresList.add(file);
                         else
                             System.err.println("WARNING: Skipping unrecognized file " + file.getName() + " ...");
@@ -561,8 +574,14 @@ public class WorkbenchComparator {
                 Structure struc;
                 try {
                     if(!custom) {
-                        PDBFileReader pdbreader = new PDBFileReader();
-                        struc = pdbreader.getStructure(f1.getPath());
+                        if(FilenameUtils.getExtension(f1.getName()).equals("cif")){
+                            CifFileReader cifFileReader = new CifFileReader();
+                            struc = cifFileReader.getStructure(f1.getPath());
+                        }
+                        else{
+                            PDBFileReader pdbreader = new PDBFileReader();
+                            struc = pdbreader.getStructure(f1.getPath());
+                        }
                         tertiaryStructure1 = new TertiaryStructure(struc);
                     } else {
                         struc = StructureIO.getStructure("3mge");
@@ -670,7 +689,7 @@ public class WorkbenchComparator {
             for (File file : fs)
                 if (!file.isDirectory())
                     if (!file.isHidden())
-                        if((FilenameUtils.getExtension(file.getName()).equals("pdb") && !custom) || (FilenameUtils.getExtension(file.getName()).equals("txt") && custom))
+                        if((FilenameUtils.getExtension(file.getName()).equals("pdb") && !custom) || (FilenameUtils.getExtension(file.getName()).equals("cif") && !custom) || (FilenameUtils.getExtension(file.getName()).equals("txt") && custom))
                             structuresList.add(file);
                         else
                             System.err.println("WARNING: Skipping unrecognized file " + file.getName() + " ...");
@@ -742,8 +761,14 @@ public class WorkbenchComparator {
                     Structure struc;
                     try {
                         if(!custom) {
-                            PDBFileReader pdbreader = new PDBFileReader();
-                            struc = pdbreader.getStructure(f1.getPath());
+                            if(FilenameUtils.getExtension(f1.getName()).equals("cif")){
+                                CifFileReader cifFileReader = new CifFileReader();
+                                struc = cifFileReader.getStructure(f1.getPath());
+                            }
+                            else{
+                                PDBFileReader pdbreader = new PDBFileReader();
+                                struc = pdbreader.getStructure(f1.getPath());
+                            }
                             tertiaryStructure1 = new TertiaryStructure(struc);
                         } else {
                             struc = StructureIO.getStructure("3mge");
@@ -824,8 +849,14 @@ public class WorkbenchComparator {
                         Structure struc2;
                         try {
                             if(!custom) {
-                                PDBFileReader pdbreader = new PDBFileReader();
-                                struc2 = pdbreader.getStructure(f2.getPath());
+                                if(FilenameUtils.getExtension(f2.getName()).equals("cif")){
+                                    CifFileReader cifFileReader = new CifFileReader();
+                                    struc2 = cifFileReader.getStructure(f2.getPath());
+                                }
+                                else{
+                                    PDBFileReader pdbreader = new PDBFileReader();
+                                    struc2 = pdbreader.getStructure(f2.getPath());
+                                }
                                 tertiaryStructure2 = new TertiaryStructure(struc2);
                             } else {
                                 struc2 = StructureIO.getStructure("3mge");

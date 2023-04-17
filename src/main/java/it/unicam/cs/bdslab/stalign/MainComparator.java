@@ -35,10 +35,14 @@ import at.unisalzburg.dbresearch.apted.node.StringNodeData;
 import at.unisalzburg.dbresearch.apted.parser.BracketStringInputParser;
 import fr.orsay.lri.varna.models.treealign.*;
 import org.apache.commons.cli.*;
+import org.apache.commons.io.FilenameUtils;
 import org.biojava.nbio.structure.Structure;
 import org.biojava.nbio.structure.StructureIO;
 import org.biojava.nbio.structure.contact.Pair;
+import org.biojava.nbio.structure.io.CifFileReader;
 import org.biojava.nbio.structure.io.PDBFileReader;
+import org.jmol.adapter.readers.cif.MMCifReader;
+import org.rcsb.cif.schema.mm.MmCifFile;
 
 /**
  * MainComparator class interacting with the user through command line options.
@@ -53,10 +57,10 @@ public class MainComparator {
         // create Options object for Command Line Definition
         Options options = new Options();
         // define command line options
-        Option o1 = new Option("sc","structcode",true,"Produce the structural RNA/Protein tree corresponding to the given structure by PDB code");
+        Option o1 = new Option("sc","structcode",true,"Produce the structural RNA/Protein tree corresponding to the given structure by code");
         o1.setArgName("input-pdb-code");
         options.addOption(o1);
-        Option o2 = new Option("sf","structfile",true,"Produce the structural RNA/Protein tree corresponding to the given structure by PDB file");
+        Option o2 = new Option("sf","structfile",true,"Produce the structural RNA/Protein tree corresponding to the given structure by PDB/CIF file");
         o2.setArgName("input-file");
         options.addOption(o2);
         Option o12 = new Option("sm","structcustom",true,"Produce the structural RNA/Protein tree corresponding to the AAS file");
@@ -126,6 +130,7 @@ public class MainComparator {
         o23.setArgName("input-file1 input-file2");
         options.addOption(o23);
 
+
         // Parse command line
         HelpFormatter formatter = new HelpFormatter();
         CommandLineParser commandLineParser = new DefaultParser();
@@ -192,8 +197,14 @@ public class MainComparator {
             try{
                 if(filepath) {
                     String filename = cmd.getOptionValue("ssf");
-                    PDBFileReader pdbreader = new PDBFileReader();
-                    struc = pdbreader.getStructure(filename);
+                    if(FilenameUtils.getExtension(filename).equals("cif")){
+                        CifFileReader cifFileReader = new CifFileReader();
+                        struc = cifFileReader.getStructure(filename);
+                    }
+                    else{
+                        PDBFileReader pdbreader = new PDBFileReader();
+                        struc = pdbreader.getStructure(filename);
+                    }
                 } else {
                     struc = StructureIO.getStructure(cmd.getOptionValue("ssc"));
                 }
@@ -245,8 +256,15 @@ public class MainComparator {
                 if(!custom) {
                     if (filepath) {
                         String filename = cmd.getOptionValue("sf");
-                        PDBFileReader pdbreader = new PDBFileReader();
-                        struc = pdbreader.getStructure(filename);
+                        //Check extension
+                        if(FilenameUtils.getExtension(filename).equals("cif")){
+                            CifFileReader cifFileReader = new CifFileReader();
+                            struc = cifFileReader.getStructure(filename);
+                        }
+                        else{
+                            PDBFileReader pdbreader = new PDBFileReader();
+                            struc = pdbreader.getStructure(filename);
+                        }
                     } else {
                         struc = StructureIO.getStructure(cmd.getOptionValue("sc"));
                     }
@@ -328,8 +346,15 @@ public class MainComparator {
             try {
                 if(!custom) {
                     if (filePath) {
-                        PDBFileReader pdbreader = new PDBFileReader();
-                        struc = pdbreader.getStructure(cmd.getOptionValues("af")[0]);
+                        String filename = cmd.getOptionValues("af")[0];
+                        if(FilenameUtils.getExtension(filename).equals("cif")){
+                            CifFileReader cifFileReader = new CifFileReader();
+                            struc = cifFileReader.getStructure(filename);
+                        }
+                        else{
+                            PDBFileReader pdbreader = new PDBFileReader();
+                            struc = pdbreader.getStructure(filename);
+                        }
                     } else {
                         struc = StructureIO.getStructure(cmd.getOptionValues("ac")[0]);
                     }
@@ -344,7 +369,7 @@ public class MainComparator {
                 System.exit(3);
             }
 
-            if(cmd.hasOption("p")){
+            if (cmd.hasOption("p")){
                 ArrayList<String> chainIds = new ArrayList<>();
                 Collections.addAll(chainIds, cmd.getOptionValues("p"));
                 tertiaryStructure.setSpecifiedChains(chainIds);
@@ -376,8 +401,15 @@ public class MainComparator {
             try {
                 if(!custom) {
                     if (filePath) {
-                        PDBFileReader pdbreader = new PDBFileReader();
-                        struc2 = pdbreader.getStructure(cmd.getOptionValues("af")[1]);
+                        String filename = cmd.getOptionValues("af")[1];
+                        if(FilenameUtils.getExtension(filename).equals("cif")){
+                            CifFileReader cifFileReader = new CifFileReader();
+                            struc2 = cifFileReader.getStructure(filename);
+                        }
+                        else{
+                            PDBFileReader pdbreader = new PDBFileReader();
+                            struc2 = pdbreader.getStructure(filename);
+                        }
                     } else {
                         struc2 = StructureIO.getStructure(cmd.getOptionValues("ac")[1]);
                     }
@@ -435,8 +467,15 @@ public class MainComparator {
             SecondaryStructure secondaryStructure = null;
             try {
                 if (filePath) {
-                    PDBFileReader pdbreader = new PDBFileReader();
-                    struc = pdbreader.getStructure(cmd.getOptionValues("ssaf")[0]);
+                    String filename = cmd.getOptionValues("ssaf")[0];
+                    if(FilenameUtils.getExtension(filename).equals("cif")){
+                        CifFileReader cifFileReader = new CifFileReader();
+                        struc = cifFileReader.getStructure(filename);
+                    }
+                    else{
+                        PDBFileReader pdbreader = new PDBFileReader();
+                        struc = pdbreader.getStructure(filename);
+                    }
                 } else {
                     struc = StructureIO.getStructure(cmd.getOptionValues("ssac")[0]);
                 }
@@ -460,8 +499,15 @@ public class MainComparator {
             SecondaryStructure secondaryStructure2 = null;
             try {
                 if (filePath) {
-                    PDBFileReader pdbreader = new PDBFileReader();
-                    struc2 = pdbreader.getStructure(cmd.getOptionValues("ssaf")[1]);
+                    String filename = cmd.getOptionValues("ssaf")[1];
+                    if(FilenameUtils.getExtension(filename).equals("cif")){
+                        CifFileReader cifFileReader = new CifFileReader();
+                        struc2 = cifFileReader.getStructure(filename);
+                    }
+                    else{
+                        PDBFileReader pdbreader = new PDBFileReader();
+                        struc2 = pdbreader.getStructure(filename);
+                    }
                 } else {
                     struc2 = StructureIO.getStructure(cmd.getOptionValues("ssac")[1]);
                 }
@@ -498,8 +544,15 @@ public class MainComparator {
             try {
                 if(!custom) {
                     if (filePath) {
-                        PDBFileReader pdbreader = new PDBFileReader();
-                        struc = pdbreader.getStructure(cmd.getOptionValues("edf")[0]);
+                        String filename = cmd.getOptionValues("edf")[0];
+                        if(FilenameUtils.getExtension(filename).equals("cif")){
+                            CifFileReader cifFileReader = new CifFileReader();
+                            struc = cifFileReader.getStructure(filename);
+                        }
+                        else{
+                            PDBFileReader pdbreader = new PDBFileReader();
+                            struc = pdbreader.getStructure(filename);
+                        }
                     } else {
                         struc = StructureIO.getStructure(cmd.getOptionValues("edc")[0]);
                     }
@@ -546,8 +599,15 @@ public class MainComparator {
             try {
                 if(!custom) {
                     if (filePath) {
-                        PDBFileReader pdbreader = new PDBFileReader();
-                        struc2 = pdbreader.getStructure(cmd.getOptionValues("edf")[1]);
+                        String filename = cmd.getOptionValues("edf")[1];
+                        if(FilenameUtils.getExtension(filename).equals("cif")){
+                            CifFileReader cifFileReader = new CifFileReader();
+                            struc2 = cifFileReader.getStructure(filename);
+                        }
+                        else{
+                            PDBFileReader pdbreader = new PDBFileReader();
+                            struc2 = pdbreader.getStructure(filename);
+                        }
                     } else {
                         struc2 = StructureIO.getStructure(cmd.getOptionValues("edc")[1]);
                     }
