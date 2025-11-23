@@ -50,7 +50,7 @@ public class TertiaryStructure {
     private double[][] distanceMatrix;
     private String distanceMatrixCalculationMethod;
     private String sequence;
-
+    private String chain;
     private ArrayList<Chain> specifiedChains;
     /**
      * Creates a new TertiaryStructure from a PDB file's structure

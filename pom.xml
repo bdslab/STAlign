@@ -69,12 +69,15 @@
             <groupId>com.tsc.lib</groupId>
             <artifactId>StatAlign</artifactId>
             <version>1.0</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/lib/StatAlign.jar</systemPath>
         </dependency>
-        <!-- local apted library -->
         <dependency>
             <groupId>com.tsc.lib</groupId>
             <artifactId>apted</artifactId>
             <version>1.0</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/lib/apted-1.0.jar</systemPath>
         </dependency>
         <dependency>
             <groupId>org.biojava</groupId>

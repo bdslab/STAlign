@@ -11,7 +11,7 @@ import java.util.Objects;
 
 
 
-public class SecondaryStructureTest {
+public class    SecondaryStructureTest {
     @Test
     @DisplayName("Secondary Structure comparison")
     void calculateSecondaryStructure() throws IOException {

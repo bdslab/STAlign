@@ -379,7 +379,7 @@ class TertiaryStructureTest {
      */
     private Structure loadFile(String fileName){
         PDBFileReader pdbreader = new PDBFileReader();
-        pdbreader.setPath("../resources");
+        pdbreader.setPath("/resources/resources/secondaryStructureTests/pdb");
         try{
             return pdbreader.getStructureById(fileName);
         } catch (Exception e){

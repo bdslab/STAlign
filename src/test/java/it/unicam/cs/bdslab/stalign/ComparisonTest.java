@@ -26,8 +26,9 @@ class ComparisonTest {
     @DisplayName("Archaea/5S comparison")
     void archeaFiveSComparsionTest() throws IOException {
         //Load folder
-        File inputFolder = new File("src/test/resources/TestComparison/Archaea/5S/");
-        FileWriter outputFile = new FileWriter("src/test/resources/TestComparison/ComparisonResults/Archaea/5S/comparisonResults.txt");
+        File inputFolder = new File("src/test/resources/resources/TestComparison/Archaea/5S/");
+        FileWriter outputFile = new FileWriter("src/test/resources/resources/TestComparison/Archaea/5S/TERSAlignComparisonResults.csv");
+
         createTreeAndCompare(inputFolder,outputFile);
     }
 
@@ -35,8 +36,8 @@ class ComparisonTest {
     @DisplayName("Archaea/16S comparison")
     void archeaSixteenSComparsionTest() throws IOException {
         //Load folder
-        File inputFolder = new File("src/test/resources/TestComparison/Archaea/16S/");
-        FileWriter outputFile = new FileWriter("src/test/resources/TestComparison/ComparisonResults/Archaea/16S/comparisonResults.txt");
+        File inputFolder = new File("src/test/resources/resources/TestComparison/Archaea/16S/");
+        FileWriter outputFile = new FileWriter("src/test/resources/resources/TestComparison/ComparisonResults/Archaea/16S/comparisonResults.txt");
         createTreeAndCompare(inputFolder,outputFile);
     }
 
@@ -80,8 +81,7 @@ class ComparisonTest {
 
     private void createTreeAndCompare(File inputFolder, FileWriter outputFile) throws IOException {
         //Load fileList
-        File[] fileList = inputFolder.listFiles();
-
+        File[] fileList = inputFolder.listFiles((dir, name) -> !name.toLowerCase().endsWith(".csv"));
         //Load scoring function
         String configurationFileName = ScoringFunction.DEFAULT_PROPERTY_FILE;
         ScoringFunction f = new ScoringFunction(configurationFileName);
