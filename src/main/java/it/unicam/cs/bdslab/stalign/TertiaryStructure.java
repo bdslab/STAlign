@@ -30,10 +30,7 @@ import org.biojava.nbio.structure.secstruc.SecStrucCalc;
 
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Locale;
+import java.util.*;
 
 /**
  * Representation of an RNA/Protein structure, including its secondary structure and the methods to extract a bond list from its tertiary structure
@@ -50,8 +47,7 @@ public class TertiaryStructure {
     private double[][] distanceMatrix;
     private String distanceMatrixCalculationMethod;
     private String sequence;
-    private String chain;
-    private ArrayList<Chain> specifiedChains;
+    private List<Chain> specifiedChains;
     /**
      * Creates a new TertiaryStructure from a PDB file's structure
      * @param structure the structure extracted from the PDB file
@@ -132,31 +128,41 @@ public class TertiaryStructure {
         return this.distanceMatrix;
     }
 
-    private void calculateDistanceMatrixCenterOfMass(){
-        int groupsNumber = this.specifiedChains == null ? getNonHetatmGroupsCounter(this.structure) : getNonHetatmGroupsCounter(this.specifiedChains);
-        double[][] distanceMatrix = new double[groupsNumber][groupsNumber];
-        int moleculeCount = 0;
-        List<Chain> chainsToCompute = this.specifiedChains == null ? this.structure.getChains() : this.specifiedChains;
-        for(Chain currentChain: chainsToCompute)
-            for (Group currentMolecule : currentChain.getAtomGroups()) {
-                if (currentMolecule.getType() != GroupType.HETATM) {
-                    int comparedMoleculeCount = 0;
-                    for (Chain comparisonChain : chainsToCompute) {
-                        for (Group comparisonMolecule : comparisonChain.getAtomGroups()) {
-                            if (comparisonMolecule.getType() != GroupType.HETATM) {
-                                distanceMatrix[moleculeCount][comparedMoleculeCount] = Calc.getDistance(Calc.centerOfMass(currentMolecule.getAtoms().toArray(new Atom[0])), Calc.centerOfMass(comparisonMolecule.getAtoms().toArray(new Atom[0])));
-                                comparedMoleculeCount++;
-                            }
-                        }
-                    }
-                    moleculeCount++;
-                }
+    private void calculateDistanceMatrixCenterOfMass() {
+        List<Group> groupsToCompute = this.getNonHetatmGroups();
+        List<Atom[]> atomsArrays = this.getAtmosArrays(groupsToCompute);
+
+        double[][] distanceMatrix = new double[groupsToCompute.size()][];
+        for (int i = 0; i < atomsArrays.size(); i++) {
+            distanceMatrix[i] = new double[i + 1];
+            for (int j = 0; j <= i; j++) {
+                distanceMatrix[i][j] = Calc.getDistance(
+                        Calc.centerOfMass(atomsArrays.get(i)),
+                        Calc.centerOfMass(atomsArrays.get(j))
+                );
             }
+        }
+        this.distanceMatrix = distanceMatrix;
+    }
+
+    private void calculateDistanceMatrixRingCentroid() {
+        List<Group> groupsToCompute = this.getNonHetatmGroups();
+        List<Atom[]> atomsArrays = this.getRingAtmosArrays(groupsToCompute);
+        double[][] distanceMatrix = new double[groupsToCompute.size()][];
+        for (int i = 0; i < atomsArrays.size(); i++) {
+            distanceMatrix[i] = new double[i + 1];
+            for (int j = 0; j <= i; j++) {
+                distanceMatrix[i][j] = Calc.getDistance(
+                    Calc.getCentroid(atomsArrays.get(i)),
+                    Calc.getCentroid(atomsArrays.get(j))
+                );
+            }
+        }
         this.distanceMatrix = distanceMatrix;
     }
 
     private void calculateDistanceMatrixDefault(){
-        Atom[] representativeAtomsArray = this.specifiedChains == null ? StructureTools.getRepresentativeAtomArray(this.structure) : this.getRepresentativeAtomArrayFromSpecifiedChains(this.specifiedChains);
+        Atom[] representativeAtomsArray = this.getRepresentativeAtomArrayFromSpecifiedChains(this.getChains());
         double[][] distanceMatrix = new double[representativeAtomsArray.length][representativeAtomsArray.length];
         for(int i=0; i<representativeAtomsArray.length; i++)
             for(int j=0; j<representativeAtomsArray.length; j++)
@@ -164,15 +170,13 @@ public class TertiaryStructure {
         this.distanceMatrix = distanceMatrix;
     }
 
-    private Atom[] getRepresentativeAtomArrayFromSpecifiedChains(ArrayList<Chain> chainsList) {
-        ArrayList<Atom> tempRepresentativeAtomsArray = new ArrayList<>();
-        chainsList.forEach(chain -> tempRepresentativeAtomsArray.addAll(new ArrayList<>(Arrays.asList(StructureTools.getRepresentativeAtomArray(chain)))));
-        Atom[] representativeAtomsArray = new Atom[tempRepresentativeAtomsArray.size()];
-        tempRepresentativeAtomsArray.toArray(representativeAtomsArray);
-        return  representativeAtomsArray;
+    private Atom[] getRepresentativeAtomArrayFromSpecifiedChains(List<Chain> chainsList) {
+        List<Atom> tempRepresentativeAtomsArray = new ArrayList<>();
+        chainsList.forEach(chain -> tempRepresentativeAtomsArray.addAll(Arrays.asList(StructureTools.getRepresentativeAtomArray(chain))));
+        return tempRepresentativeAtomsArray.toArray(new Atom[tempRepresentativeAtomsArray.size()]);
     }
 
-    private ArrayList<Chain> getSpecifiedChainsByIds(ArrayList<String>chainIds){
+    private ArrayList<Chain> getSpecifiedChainsByIds(List<String>chainIds){
         ArrayList<Chain> selectedChainsList = new ArrayList<>();
         this.structure.getChains().forEach(chain -> {
             if(chainIds.stream().anyMatch(chain.getName()::equalsIgnoreCase))
@@ -181,16 +185,7 @@ public class TertiaryStructure {
         return selectedChainsList;
     }
 
-    private int getNonHetatmGroupsCounter(Structure struc){
-        int nonHetatmGroupsCounter = 0;
-        for(Chain currentChain : struc.getChains())
-            for(Group currentGroup : currentChain.getAtomGroups())
-                if(currentGroup.getType() != GroupType.HETATM)
-                    nonHetatmGroupsCounter++;
-        return nonHetatmGroupsCounter;
-    }
-
-    private int getNonHetatmGroupsCounter(ArrayList<Chain> chainList){
+    private int getNonHetatmGroupsCounter(List<Chain> chainList){
         int nonHetatmGroupsCounter = 0;
         for(Chain currentChain : chainList)
             for(Group currentGroup : currentChain.getAtomGroups())
@@ -345,5 +340,93 @@ public class TertiaryStructure {
     public void setSequence(String sequence) {
         this.sequence = sequence;
     }
+
+    private void calculateDistanceMatrixC1(){
+        List<Group> nonHetatmGroups = this.getNonHetatmGroups();
+
+        // Create a cache to store the C1' atoms to avoid multiple calls to getAtom which is expensive
+        List<Atom> c1Atoms = new ArrayList<>(nonHetatmGroups.size());
+        for (Group group : nonHetatmGroups) {
+            Atom c1Atom = group.getAtom("C1'");
+            if (c1Atom != null)
+                c1Atoms.add(c1Atom);
+        }
+        int groupsNumber = c1Atoms.size();
+        double[][] distanceMatrix = new double[groupsNumber][];
+
+        for (int i = 0; i < c1Atoms.size(); i++) {
+            distanceMatrix[i] = new double[i + 1];
+            distanceMatrix[i][i] = 0;
+            Atom c1i = c1Atoms.get(i);
+            for (int j = 0; j < i; j++) {
+                Atom c1j = c1Atoms.get(j);
+                distanceMatrix[i][j] = Calc.getDistance(c1i, c1j);
+            }
+        }
+        this.distanceMatrix = distanceMatrix;
+    }
+
+    /**
+     * Find the best chain in the structure
+     * @return the specified chain or the first chain if no chain is found
+     */
+    protected List<Chain> getChains() {
+        if (this.specifiedChains != null) {
+            return this.specifiedChains;
+        }
+        if (structure.getChains().size() == 1){
+            this.specifiedChains = structure.getChains().stream()
+                    .filter(c -> c.isNucleicAcid() || c.isProtein())
+                    .toList();
+        }
+        return this.specifiedChains;
+    }
+
+    private static boolean isNotHETATM(Group group) {
+        return group.getType() != GroupType.HETATM;
+    }
+
+    private List<Group> getNonHetatmGroups(){
+        List<Group> nonHetatmGroups = new ArrayList<>(this.getChains().stream().mapToInt(c -> c.getAtomGroups().size()).sum());
+        for(Chain currentChain : this.getChains())
+            for(Group currentGroup : currentChain.getAtomGroups())
+                if(currentGroup.getType() != GroupType.HETATM)
+                    nonHetatmGroups.add(currentGroup);
+        return nonHetatmGroups;
+    }
+
+    private List<Atom[]> getAtmosArrays(List<Group> groups) {
+        List<Atom[]> atoms = new ArrayList<>(groups.size());
+        for (Group group : groups) {
+            atoms.add(group.getAtoms().toArray(new Atom[group.getAtoms().size()]));
+        }
+        return atoms;
+    }
+
+    private List<Atom[]> getRingAtmosArrays(List<Group> groups) {
+        List<Atom[]> atoms = new ArrayList<>(groups.size());
+        for (Group group : groups) {
+            List<Atom> ringAtoms = new ArrayList<>(group.getAtoms().size());
+            for (Atom atom : group.getAtoms()) {
+                String name = atom.getName().trim();
+                if (isPurine(group) && PURINE_RING_ATOMS.contains(name))
+                    ringAtoms.add(atom);
+                else if (!isPurine(group) && PYRIMIDINE_RING_ATOMS.contains(name))
+                    ringAtoms.add(atom);
+            }
+            atoms.add(ringAtoms.toArray(new Atom[ringAtoms.size()]));
+        }
+        return atoms;
+    }
+
+    private static final Set<String> PURINE_RING_ATOMS = Set.of("N1","C2","N3","C4","C5","C6","N7","C8","N9");
+    private static final Set<String> PYRIMIDINE_RING_ATOMS = Set.of("N1","C2","N3","C4","C5","C6");
+
+    private static boolean isPurine(Group g) {
+        //TODO: Check for G3, A5...
+        String name = g.getPDBName().trim();
+        return name.equals("A") || name.equals("G");
+    }
+
 
 }

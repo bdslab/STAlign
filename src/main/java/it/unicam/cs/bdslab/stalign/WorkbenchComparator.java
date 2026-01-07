@@ -21,18 +21,11 @@
  */
 package it.unicam.cs.bdslab.stalign;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.PrintStream;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.ListIterator;
-import java.util.Map;
-import java.util.Set;
+import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.*;
+import java.util.stream.Collectors;
 
 //import javax.swing.JFileChooser;
 //import javax.swing.JOptionPane;
@@ -109,6 +102,9 @@ public class WorkbenchComparator {
         Option o15 = new Option("edf","editdistanceinput",true,"Process the files in the given folder and calculate edit distance");
         o15.setArgName("input-folder");
         options.addOption(o15);
+        Option o16 = new Option("sc", "specifychains", true, "A csv file containing the chains for each file");
+        o16.setArgName("chanins");
+        options.addOption(o16);
 
         // Parse command line
         HelpFormatter formatter = new HelpFormatter();
@@ -166,6 +162,16 @@ public class WorkbenchComparator {
                     + f.getEditdistanceRenameCost();
             System.out.println(scores);
             return;
+        }
+        Map<String, ArrayList<String>> chainsByFileName = new HashMap<>();
+        if (cmd.hasOption("sc")) {
+            try {
+                chainsByFileName = getChains(Paths.get(cmd.getOptionValue("sc")).toFile());
+            } catch (FileNotFoundException e) {
+                System.err.println("ERROR: File not found.  Reason: " + e.getMessage() + "\n");
+                System.exit(1);
+                return;
+            }
         }
 
         // Manage option f
@@ -296,6 +302,10 @@ public class WorkbenchComparator {
                     //manage option cm
                     if(cmd.hasOption("cm"))
                         tertiaryStructure1.setDistanceMatrixCalculationMethod("centerofmass");
+
+                    if (chainsByFileName.containsKey(f1.getName())) {
+                        tertiaryStructure1.setSpecifiedChains(chainsByFileName.get(f1.getName()));
+                    }
 
                     // Create the Structural RNA Tree and put the object into the map
                     st1 = new TERSAlignTree(tertiaryStructure1);
@@ -764,6 +774,26 @@ public class WorkbenchComparator {
             if(currentPair.getSecond() > lastIndex)
                 lastIndex = currentPair.getSecond();
         return lastIndex;
+    }
+
+    /**
+     * The expected file is a csv with two columns, the first row is the header
+     * @param inputFile the csv
+     * @return a map where the key is the filename and the value are the chains to consider for that file
+     * @throws FileNotFoundException if the file is not found
+     */
+    private static Map<String, ArrayList<String>> getChains(File inputFile) throws FileNotFoundException {
+        FileInputStream fis = new FileInputStream(inputFile);
+        InputStreamReader isr = new InputStreamReader(fis);
+        BufferedReader br = new BufferedReader(isr);
+        return br.lines()
+            .skip(1)
+            .map(l -> l.split(","))
+            .collect(Collectors.toMap(
+                    l -> l[0],
+                    l -> new ArrayList<>(Arrays.asList(l[1].split(";")))
+            ));
+
     }
 
 }
