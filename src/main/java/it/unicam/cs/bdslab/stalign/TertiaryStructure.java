@@ -40,6 +40,10 @@ import java.util.stream.Stream;
  */
 public class TertiaryStructure {
 
+    /**
+     * Minimum distance (in indexes) between two nucleotides/amino acids to be considered in the contact matrix
+     */
+    public static final int INDEX_DISTANCE_THRESHOLD = 2;
     public static final String[] RNA_CM_TYPES = {"default", "C1", "centerofmass", "ringcentroid"};
     public static final String[] PROTEIN_CM_TYPES = {"default", "centerofmass", "CA"};
     public static final String[] MIXED_CM_TYPES = {"default", "centerofmass"};
@@ -114,7 +118,7 @@ public class TertiaryStructure {
         boolean[][] contactMatrix = new boolean[distanceMatrix.length][distanceMatrix.length];
         for (int i=0; i<distanceMatrix.length; i++) {
             for (int j = 0; j < distanceMatrix.length; j++) {
-                contactMatrix[i][j] = (distanceMatrix[i][j] <= this.threshold) && i != j && Math.abs(i-j) > 2;
+                contactMatrix[i][j] = Math.abs(i-j) > INDEX_DISTANCE_THRESHOLD && accessDistanceMatrix(i, j) <= this.threshold && i != j;
             }
         }
         this.contactMatrix = contactMatrix;
@@ -468,6 +472,7 @@ public class TertiaryStructure {
         switch (this.distanceMatrixCalculationMethodRNA) {
             case "default" -> this.calculateDistanceMatrixDefault();
             case "C1" -> this.calculateDistanceMatrixByAtom("C1'");
+            case "O3" -> this.calculateDistanceMatrixByAtom("O3'");
             case "centerofmass" -> this.calculateDistanceMatrixCenterOfMass();
             case "ringcentroid" -> this.calculateDistanceMatrixRingCentroid();
         }
@@ -518,5 +523,17 @@ public class TertiaryStructure {
             .toList();
     }
 
+    /**
+     * Access the distance matrix at position (i,j), because of the storage optimization only half of the matrix is stored:
+     * 0
+     * x 0
+     * x x 0
+     * ...
+     * @param i
+     * @param j
+     */
+    private double accessDistanceMatrix(int i, int j) {
+        return i >= j ? this.distanceMatrix[i][j] : this.distanceMatrix[j][i];
+    }
 
 }
