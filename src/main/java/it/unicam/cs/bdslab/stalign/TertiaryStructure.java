@@ -31,6 +31,7 @@ import org.biojava.nbio.structure.secstruc.SecStrucCalc;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.*;
+import java.util.stream.Stream;
 
 /**
  * Representation of an RNA/Protein structure, including its secondary structure and the methods to extract a bond list from its tertiary structure
@@ -39,15 +40,21 @@ import java.util.*;
  */
 public class TertiaryStructure {
 
+    public static final String[] RNA_CM_TYPES = {"default", "C1", "centerofmass", "ringcentroid"};
+    public static final String[] PROTEIN_CM_TYPES = {"default", "centerofmass", "CA"};
+    public static final String[] MIXED_CM_TYPES = {"default", "centerofmass"};
     private final Structure structure;
     private double threshold; //Value between 4.5 and 12 ångström
     private SecStrucCalc secondaryStructure;
     private ArrayList<Pair<Integer>> bondList;
     private boolean[][] contactMatrix;
     private double[][] distanceMatrix;
-    private String distanceMatrixCalculationMethod;
+    private String distanceMatrixCalculationMethodRNA;
+    private String distanceMatrixCalculationMethodProtein;
+    private String distanceMatrixCalculationMethodMixed;
     private String sequence;
     private List<Chain> specifiedChains;
+
     /**
      * Creates a new TertiaryStructure from a PDB file's structure
      * @param structure the structure extracted from the PDB file
@@ -60,7 +67,9 @@ public class TertiaryStructure {
         this.bondList = null;
         this.contactMatrix = null;
         this.distanceMatrix = null;
-        this.distanceMatrixCalculationMethod = "default";
+        this.distanceMatrixCalculationMethodRNA = RNA_CM_TYPES[0];
+        this.distanceMatrixCalculationMethodProtein = PROTEIN_CM_TYPES[0];
+        this.distanceMatrixCalculationMethodMixed = MIXED_CM_TYPES[0];
         this.specifiedChains = null;
     }
 
@@ -89,7 +98,6 @@ public class TertiaryStructure {
         this.bondList = bondList;
     }
 
-
     /**
      * Returns a boolean matrix, values are true if their distance (taken from default calculation)
      * is less than threshold value.
@@ -106,7 +114,7 @@ public class TertiaryStructure {
         boolean[][] contactMatrix = new boolean[distanceMatrix.length][distanceMatrix.length];
         for (int i=0; i<distanceMatrix.length; i++) {
             for (int j = 0; j < distanceMatrix.length; j++) {
-                contactMatrix[i][j] = (distanceMatrix[i][j] <= this.threshold) && i != j;
+                contactMatrix[i][j] = (distanceMatrix[i][j] <= this.threshold) && i != j && Math.abs(i-j) > 2;
             }
         }
         this.contactMatrix = contactMatrix;
@@ -118,12 +126,11 @@ public class TertiaryStructure {
      * depending on distance matrix calculation method
      * @return distance matrix
      */
-    public double[][] getDistanceMatrix(){
-        if(this.distanceMatrixCalculationMethod.equals("default")){
-            this.calculateDistanceMatrixDefault();
-        }
-        else if (this.distanceMatrixCalculationMethod.equals("centerofmass")){
-            this.calculateDistanceMatrixCenterOfMass();
+    public double[][] getDistanceMatrix() {
+        switch (getPDBType()) {
+            case RNA -> calculateDistanceMatrixRNA();
+            case PROTEIN -> calculateDistanceMatrixProtein();
+            case MIXED -> calculateDistanceMatrixMixed();
         }
         return this.distanceMatrix;
     }
@@ -223,15 +230,7 @@ public class TertiaryStructure {
      * @return structure type (RNA/Protein)
      */
     public String getType(){
-        for(Chain c : this.structure.getChains()){
-            if(c.getPredominantGroupType() == GroupType.AMINOACID){
-                return "PROTEIN";
-            }
-            else if(c.getPredominantGroupType() == GroupType.NUCLEOTIDE){
-                return "RNA";
-            }
-        }
-        return null;
+        return this.getPDBType().toString();
     }
 
     public double getThreshold() {
@@ -249,7 +248,7 @@ public class TertiaryStructure {
 
     public String getSequence(){
         StringBuilder builder = new StringBuilder();
-        for(Chain currentChain : this.structure.getChains())
+        for(Chain currentChain : this.getChains())
             for(Group currentGroup : currentChain.getAtomGroups())
                 if(currentGroup.isAminoAcid() || currentGroup.isNucleotide())
                     builder.append(StructureTools.get1LetterCode(currentGroup.getPDBName()));
@@ -260,9 +259,9 @@ public class TertiaryStructure {
      * Sets the distance matrix calculation method.
      * @param calculationMethod chosen calculation method, can be either "default" or "centerofmass"
      */
-    public void setDistanceMatrixCalculationMethod(String calculationMethod){
-        if(calculationMethod.toLowerCase(Locale.ROOT).equals("default") || calculationMethod.toLowerCase(Locale.ROOT).equals("centerofmass"))
-            this.distanceMatrixCalculationMethod = calculationMethod.toLowerCase(Locale.ROOT);
+    public void setDistanceMatrixCalculationMethodRNA(String calculationMethod){
+        checkMethod(calculationMethod, RNA_CM_TYPES);
+        this.distanceMatrixCalculationMethodRNA = calculationMethod.toLowerCase(Locale.ROOT);
     }
 
     /**
@@ -272,7 +271,7 @@ public class TertiaryStructure {
         try {
             double[][] distanceMatrix = this.getDistanceMatrix();
             FileWriter writer;
-            if(this.distanceMatrixCalculationMethod.equals("default"))
+            if(this.distanceMatrixCalculationMethodRNA.equals("default"))
                 writer = new FileWriter("src/main/resources/DefaultDistanceMatrix.csv");
             else
                 writer = new FileWriter("src/main/resources/DistanceMatrixCenterOfMass.csv");
@@ -330,6 +329,10 @@ public class TertiaryStructure {
      * @param chainIds IDs of the selected chains
      */
     public void setSpecifiedChains(ArrayList<String> chainIds) {
+        if (chainIds == null || chainIds.isEmpty() || chainIds.size() == 1 && chainIds.get(0).equals("*")) {
+            // when getChains is called, it will select all nucleic acid and protein chains
+            this.specifiedChains = null;
+        }
         this.specifiedChains = this.getSpecifiedChainsByIds(chainIds);
     }
 
@@ -341,26 +344,56 @@ public class TertiaryStructure {
         this.sequence = sequence;
     }
 
-    private void calculateDistanceMatrixC1(){
+    /**
+     * Sets the distance matrix calculation method for proteins.
+     * @param distanceMatrixCalculationMethodProtein chosen calculation method
+     */
+    public void setDistanceMatrixCalculationMethodProtein(String distanceMatrixCalculationMethodProtein) {
+        checkMethod(distanceMatrixCalculationMethodProtein, PROTEIN_CM_TYPES);
+        this.distanceMatrixCalculationMethodProtein = distanceMatrixCalculationMethodProtein;
+    }
+
+    /**
+     * Sets the distance matrix calculation method for mixed structures.
+     * @param distanceMatrixCalculationMethodMixed chosen calculation method
+     */
+    public void setDistanceMatrixCalculationMethodMixed(String distanceMatrixCalculationMethodMixed) {
+        checkMethod(distanceMatrixCalculationMethodMixed, MIXED_CM_TYPES);
+        this.distanceMatrixCalculationMethodMixed = distanceMatrixCalculationMethodMixed;
+    }
+
+    private void checkMethod(String method, String[] validMethods){
+        boolean isValid = false;
+        for(String validMethod : validMethods){
+            if(method.equalsIgnoreCase(validMethod)){
+                isValid = true;
+                break;
+            }
+        }
+        if(!isValid)
+            throw new IllegalArgumentException("Invalid distance matrix calculation method: " + method);
+    }
+
+    private void calculateDistanceMatrixByAtom(String atomName) {
         List<Group> nonHetatmGroups = this.getNonHetatmGroups();
 
-        // Create a cache to store the C1' atoms to avoid multiple calls to getAtom which is expensive
-        List<Atom> c1Atoms = new ArrayList<>(nonHetatmGroups.size());
+        // Create a cache to store the CA atoms to avoid multiple calls to getAtom which is expensive
+        List<Atom> caAtoms = new ArrayList<>(nonHetatmGroups.size());
         for (Group group : nonHetatmGroups) {
-            Atom c1Atom = group.getAtom("C1'");
-            if (c1Atom != null)
-                c1Atoms.add(c1Atom);
+            Atom caAtom = group.getAtom(atomName);
+            if (caAtom != null)
+                caAtoms.add(caAtom);
         }
-        int groupsNumber = c1Atoms.size();
+        int groupsNumber = caAtoms.size();
         double[][] distanceMatrix = new double[groupsNumber][];
 
-        for (int i = 0; i < c1Atoms.size(); i++) {
+        for (int i = 0; i < caAtoms.size(); i++) {
             distanceMatrix[i] = new double[i + 1];
             distanceMatrix[i][i] = 0;
-            Atom c1i = c1Atoms.get(i);
+            Atom cai = caAtoms.get(i);
             for (int j = 0; j < i; j++) {
-                Atom c1j = c1Atoms.get(j);
-                distanceMatrix[i][j] = Calc.getDistance(c1i, c1j);
+                Atom caj = caAtoms.get(j);
+                distanceMatrix[i][j] = Calc.getDistance(cai, caj);
             }
         }
         this.distanceMatrix = distanceMatrix;
@@ -374,20 +407,22 @@ public class TertiaryStructure {
         if (this.specifiedChains != null) {
             return this.specifiedChains;
         }
-        if (structure.getChains().size() == 1){
-            this.specifiedChains = structure.getChains().stream()
-                    .filter(c -> c.isNucleicAcid() || c.isProtein())
-                    .toList();
-        }
+        this.specifiedChains = structure.getChains()
+                .stream()
+                .filter(c -> c.isProtein() || c.isNucleicAcid())
+                .toList();
         return this.specifiedChains;
     }
 
-    private static boolean isNotHETATM(Group group) {
+    private boolean isNotHETATM(Group group) {
         return group.getType() != GroupType.HETATM;
     }
 
     private List<Group> getNonHetatmGroups(){
-        List<Group> nonHetatmGroups = new ArrayList<>(this.getChains().stream().mapToInt(c -> c.getAtomGroups().size()).sum());
+        List<Group> nonHetatmGroups = new ArrayList<>(((int) this.getChains().stream()
+                .flatMap(c -> c.getAtomGroups().stream())
+                .filter(this::isNotHETATM)
+                .count()));
         for(Chain currentChain : this.getChains())
             for(Group currentGroup : currentChain.getAtomGroups())
                 if(currentGroup.getType() != GroupType.HETATM)
@@ -426,6 +461,61 @@ public class TertiaryStructure {
         //TODO: Check for G3, A5...
         String name = g.getPDBName().trim();
         return name.equals("A") || name.equals("G");
+    }
+
+
+    private void calculateDistanceMatrixRNA() {
+        switch (this.distanceMatrixCalculationMethodRNA) {
+            case "default" -> this.calculateDistanceMatrixDefault();
+            case "C1" -> this.calculateDistanceMatrixByAtom("C1'");
+            case "centerofmass" -> this.calculateDistanceMatrixCenterOfMass();
+            case "ringcentroid" -> this.calculateDistanceMatrixRingCentroid();
+        }
+    }
+
+    private void calculateDistanceMatrixProtein() {
+        switch (this.distanceMatrixCalculationMethodProtein) {
+            case "default" -> this.calculateDistanceMatrixDefault();
+            case "CA" -> this.calculateDistanceMatrixByAtom("CA");
+            case "centerofmass" -> this.calculateDistanceMatrixCenterOfMass();
+        }
+    }
+
+    private void calculateDistanceMatrixMixed() {
+        switch (this.distanceMatrixCalculationMethodMixed) {
+            case "default" -> this.calculateDistanceMatrixDefault();
+            case "centerofmass" -> this.calculateDistanceMatrixCenterOfMass();
+        }
+    }
+
+    private PDBType getPDBType() {
+        return this.getChains()
+                .stream()
+                .map(c -> c.isProtein() ? PDBType.PROTEIN : c.isNucleicAcid() ? PDBType.RNA : null)
+                .reduce((acc, type) -> {
+                    if (type == null) return acc;
+                    if (acc != type) return PDBType.MIXED;
+                    return acc;
+                })
+                .orElseThrow(() -> new IllegalArgumentException("No valid chains selceted for: " + structure.getPdbId())); // Should not happen
+    }
+
+    private enum PDBType {
+        RNA,
+        PROTEIN,
+        MIXED
+    }
+
+    private List<Group> getGroups() {
+        PDBType pdbType = this.getPDBType();
+        return this.getChains().stream()
+            .flatMap(c -> c.getAtomGroups().stream())
+            .filter(f -> switch (pdbType) {
+                case RNA -> f.isNucleotide();
+                case PROTEIN -> f.isAminoAcid();
+                case MIXED -> f.isAminoAcid() || f.isNucleotide();
+            })
+            .toList();
     }
 
 

@@ -102,8 +102,6 @@ public class MainComparator {
         Option o10 = new Option("n","useconffile",true,"Use the specified configuration file instead of the default one");
         o10.setArgName("conf-file");
         options.addOption(o10);
-        Option o14 = new Option("cm","centerofmass",false,"Calculate the distance matrix with center of mass method");
-        options.addOption(o14);
         Option o15 = new Option("t","threshold",true,"Set a threshold");
         o15.setArgName("threshold");
         options.addOption(o15);
@@ -125,6 +123,28 @@ public class MainComparator {
         o23.setArgs(2);
         o23.setArgName("input-file1 input-file2");
         options.addOption(o23);
+        Option cmr = Option.builder("cmr")
+                .longOpt("calculation-method-rna")
+                .desc("How the distance matrix is calculated for RNA structures: \"cm\" for center of mass, \"d\" default, \"rc\" ring centroid, \"c1\" C1' atom")
+                .hasArgs()
+                .numberOfArgs(1)
+                .build();
+        options.addOption(cmr);
+
+        Option cmp = Option.builder("cmp")
+                .longOpt("calculation-method-protein")
+                .desc("How the distance matrix is calculated for Protein structures: \"cm\" for center of mass, \"d\" default, \"ca\" CA atom")
+                .hasArgs()
+                .numberOfArgs(1)
+                .build();
+        options.addOption(cmp);
+
+        Option cmm = Option.builder("cmm")
+                .longOpt("calculation-method-mixed")
+                .desc("How the distance matrix is calculated for mixed RNA/Protein structures: \"cm\" for center of mass, \"d\" default")
+                .hasArgs()
+                .numberOfArgs(1)
+                .build();
 
         // Parse command line
         HelpFormatter formatter = new HelpFormatter();
@@ -274,8 +294,8 @@ public class MainComparator {
             }
 
             //manage option cm
-            if(cmd.hasOption("cm"))
-                tertiaryStructure.setDistanceMatrixCalculationMethod("centerofmass");
+            if(cmd.hasOption(cmr.getOpt()))
+                tertiaryStructure.setDistanceMatrixCalculationMethodRNA("centerofmass");
 
             // Construct the TERSAtree
             Tree<String> t = null;
@@ -355,9 +375,16 @@ public class MainComparator {
                 tertiaryStructure.setThreshold(threshold);
             }
 
-            //manage option cm
-            if(cmd.hasOption("cm"))
-                tertiaryStructure.setDistanceMatrixCalculationMethod("centerofmass");
+            //manage calculation methods
+            tertiaryStructure.setDistanceMatrixCalculationMethodRNA(
+                    cmd.getOptionValue(cmr.getOpt(), TertiaryStructure.RNA_CM_TYPES[0])
+            );
+            tertiaryStructure.setDistanceMatrixCalculationMethodProtein(
+                    cmd.getOptionValue(cmp.getOpt(), TertiaryStructure.PROTEIN_CM_TYPES[0])
+            );
+            tertiaryStructure.setDistanceMatrixCalculationMethodMixed(
+                    cmd.getOptionValue(cmm.getOpt(), TertiaryStructure.MIXED_CM_TYPES[0])
+            );
 
             // Construct structural RNA/Protein tree 1
             TERSAlignTree s1 = new TERSAlignTree(tertiaryStructure);
@@ -404,8 +431,17 @@ public class MainComparator {
             }
 
             //manage option cm
-            if(cmd.hasOption("cm"))
-                tertiaryStructure2.setDistanceMatrixCalculationMethod("centerofmass");
+            //manage calculation methods
+            tertiaryStructure2.setDistanceMatrixCalculationMethodRNA(
+                    cmd.getOptionValue(cmr.getOpt(), TertiaryStructure.RNA_CM_TYPES[0])
+            );
+            tertiaryStructure2.setDistanceMatrixCalculationMethodProtein(
+                    cmd.getOptionValue(cmp.getOpt(), TertiaryStructure.PROTEIN_CM_TYPES[0])
+            );
+            tertiaryStructure2.setDistanceMatrixCalculationMethodMixed(
+                    cmd.getOptionValue(cmm.getOpt(), TertiaryStructure.MIXED_CM_TYPES[0])
+            );
+
 
             // Construct structural RNA/Protein tree 2
             TERSAlignTree s2 = new TERSAlignTree(tertiaryStructure2);
@@ -525,9 +561,16 @@ public class MainComparator {
                 tertiaryStructure.setThreshold(threshold);
             }
 
-            //manage option cm
-            if(cmd.hasOption("m"))
-                tertiaryStructure.setDistanceMatrixCalculationMethod("centerofmass");
+            //manage calculation methods
+            tertiaryStructure.setDistanceMatrixCalculationMethodRNA(
+                    cmd.getOptionValue(cmr.getOpt(), TertiaryStructure.RNA_CM_TYPES[0])
+            );
+            tertiaryStructure.setDistanceMatrixCalculationMethodProtein(
+                    cmd.getOptionValue(cmp.getOpt(), TertiaryStructure.PROTEIN_CM_TYPES[0])
+            );
+            tertiaryStructure.setDistanceMatrixCalculationMethodMixed(
+                    cmd.getOptionValue(cmm.getOpt(), TertiaryStructure.MIXED_CM_TYPES[0])
+            );
 
             // Construct structural RNA/Protein tree 1
             TERSAlignTree s1 = new TERSAlignTree(tertiaryStructure);
@@ -574,8 +617,17 @@ public class MainComparator {
             }
 
             //manage option cm
-            if(cmd.hasOption("cm"))
-                tertiaryStructure2.setDistanceMatrixCalculationMethod("centerofmass");
+            //manage calculation methods
+            tertiaryStructure2.setDistanceMatrixCalculationMethodRNA(
+                    cmd.getOptionValue(cmr.getOpt(), TertiaryStructure.RNA_CM_TYPES[0])
+            );
+            tertiaryStructure2.setDistanceMatrixCalculationMethodProtein(
+                    cmd.getOptionValue(cmp.getOpt(), TertiaryStructure.PROTEIN_CM_TYPES[0])
+            );
+            tertiaryStructure2.setDistanceMatrixCalculationMethodMixed(
+                    cmd.getOptionValue(cmm.getOpt(), TertiaryStructure.MIXED_CM_TYPES[0])
+            );
+
 
             // Construct structural RNA/Protein tree 2
             TERSAlignTree s2 = new TERSAlignTree(tertiaryStructure2);

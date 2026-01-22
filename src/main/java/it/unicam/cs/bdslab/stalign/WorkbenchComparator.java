@@ -22,7 +22,6 @@
 package it.unicam.cs.bdslab.stalign;
 
 import java.io.*;
-import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -91,8 +90,6 @@ public class WorkbenchComparator {
         Option o11 = new Option("fm","inputcustom",true,"Process the AAS files in the given folder");
         o11.setArgName("input-folder");
         options.addOption(o11);
-        Option o12 = new Option("cm","centerofmass",false,"Calculate the distance matrix with center of mass method");
-        options.addOption(o12);
         Option o13 = new Option("t","threshold",true,"Set a threshold");
         o13.setArgName("threshold");
         options.addOption(o13);
@@ -105,7 +102,28 @@ public class WorkbenchComparator {
         Option o16 = new Option("sc", "specifychains", true, "A csv file containing the chains for each file");
         o16.setArgName("chanins");
         options.addOption(o16);
+        Option cmr = Option.builder("cmr")
+                .longOpt("calculation-method-rna")
+                .desc("How the distance matrix is calculated for RNA structures: \"cm\" for center of mass, \"d\" default, \"rc\" ring centroid, \"c1\" C1' atom")
+                .hasArgs()
+                .numberOfArgs(1)
+                .build();
+        options.addOption(cmr);
 
+        Option cmp = Option.builder("cmp")
+                .longOpt("calculation-method-protein")
+                .desc("How the distance matrix is calculated for Protein structures: \"cm\" for center of mass, \"d\" default, \"ca\" CA atom")
+                .hasArgs()
+                .numberOfArgs(1)
+                .build();
+        options.addOption(cmp);
+
+        Option cmm = Option.builder("cmm")
+                .longOpt("calculation-method-mixed")
+                .desc("How the distance matrix is calculated for mixed RNA/Protein structures: \"cm\" for center of mass, \"d\" default")
+                .hasArgs()
+                .numberOfArgs(1)
+                .build();
         // Parse command line
         HelpFormatter formatter = new HelpFormatter();
         CommandLineParser commandLineParser = new DefaultParser();
@@ -299,9 +317,16 @@ public class WorkbenchComparator {
                         tertiaryStructure1.setThreshold(threshold);
                     }
 
-                    //manage option cm
-                    if(cmd.hasOption("cm"))
-                        tertiaryStructure1.setDistanceMatrixCalculationMethod("centerofmass");
+                    //manage calculation methods
+                    tertiaryStructure1.setDistanceMatrixCalculationMethodRNA(
+                            cmd.getOptionValue(cmr.getOpt(), TertiaryStructure.RNA_CM_TYPES[0])
+                    );
+                    tertiaryStructure1.setDistanceMatrixCalculationMethodProtein(
+                            cmd.getOptionValue(cmp.getOpt(), TertiaryStructure.PROTEIN_CM_TYPES[0])
+                    );
+                    tertiaryStructure1.setDistanceMatrixCalculationMethodMixed(
+                            cmd.getOptionValue(cmm.getOpt(), TertiaryStructure.MIXED_CM_TYPES[0])
+                    );
 
                     if (chainsByFileName.containsKey(f1.getName())) {
                         tertiaryStructure1.setSpecifiedChains(chainsByFileName.get(f1.getName()));
@@ -316,6 +341,7 @@ public class WorkbenchComparator {
                     try {
                         t1 = st1.getStructuralTree();
                     }catch (StackOverflowError e){
+                        e.printStackTrace();
                         System.err.println("The molecule in file " + f1.getName() + " is too big, can't generate the associated tree");
                         System.exit(1);
                     }
@@ -340,6 +366,7 @@ public class WorkbenchComparator {
                     try {
                         t1 = st1.getStructuralTree();
                     }catch (StackOverflowError e){
+                        e.printStackTrace();
                         System.err.println("The molecule in file " + f1.getName() + " is too big, can't generate the associated tree");
                         System.exit(1);
                     }
@@ -385,9 +412,17 @@ public class WorkbenchComparator {
                             tertiaryStructure2.setThreshold(threshold);
                         }
 
-                        //manage option cm
-                        if(cmd.hasOption("cm"))
-                            tertiaryStructure2.setDistanceMatrixCalculationMethod("centerofmass");
+                        //manage calculation methods
+                        tertiaryStructure2.setDistanceMatrixCalculationMethodRNA(
+                                cmd.getOptionValue(cmr.getOpt(), TertiaryStructure.RNA_CM_TYPES[0])
+                        );
+                        tertiaryStructure2.setDistanceMatrixCalculationMethodProtein(
+                                cmd.getOptionValue(cmp.getOpt(), TertiaryStructure.PROTEIN_CM_TYPES[0])
+                        );
+                        tertiaryStructure2.setDistanceMatrixCalculationMethodMixed(
+                                cmd.getOptionValue(cmm.getOpt(), TertiaryStructure.MIXED_CM_TYPES[0])
+                        );
+
 
                         // Create the Structural RNA Tree and put the object into the map
                         st2 = new TERSAlignTree(tertiaryStructure2);
@@ -398,6 +433,7 @@ public class WorkbenchComparator {
                         try {
                             t2 = st2.getStructuralTree();
                         }catch (StackOverflowError e){
+                            e.printStackTrace();
                             System.err.println("The molecule in file " + f1.getName() + " is too big, can't generate the associated tree");
                             System.exit(1);
                         }
@@ -422,6 +458,7 @@ public class WorkbenchComparator {
                         try {
                             t2 = st2.getStructuralTree();
                         }catch (StackOverflowError e){
+                            e.printStackTrace();
                             System.err.println("The molecule in file " + f1.getName() + " is too big, can't generate the associated tree");
                             System.exit(1);
                         }
@@ -595,9 +632,17 @@ public class WorkbenchComparator {
                         tertiaryStructure1.setThreshold(threshold);
                     }
 
-                    //manage option cm
-                    if(cmd.hasOption("cm"))
-                        tertiaryStructure1.setDistanceMatrixCalculationMethod("centerofmass");
+                    //manage calculation methods
+                    tertiaryStructure1.setDistanceMatrixCalculationMethodRNA(
+                            cmd.getOptionValue(cmr.getOpt(), TertiaryStructure.RNA_CM_TYPES[0])
+                    );
+                    tertiaryStructure1.setDistanceMatrixCalculationMethodProtein(
+                            cmd.getOptionValue(cmp.getOpt(), TertiaryStructure.PROTEIN_CM_TYPES[0])
+                    );
+                    tertiaryStructure1.setDistanceMatrixCalculationMethodMixed(
+                            cmd.getOptionValue(cmm.getOpt(), TertiaryStructure.MIXED_CM_TYPES[0])
+                    );
+
 
                     // Create the Structural RNA Tree and put the object into the map
                     st1 = new TERSAlignTree(tertiaryStructure1);
@@ -608,6 +653,7 @@ public class WorkbenchComparator {
                     try {
                         t1 = st1.getStructuralTree();
                     }catch (StackOverflowError e){
+                        e.printStackTrace();
                         System.err.println("The molecule in file " + f1.getName() + " is too big, can't generate the associated tree");
                         System.exit(1);
                     }
@@ -632,6 +678,7 @@ public class WorkbenchComparator {
                     try {
                         t1 = st1.getStructuralTree();
                     }catch (StackOverflowError e){
+                        e.printStackTrace();
                         System.err.println("The molecule in file " + f1.getName() + " is too big, can't generate the associated tree");
                         System.exit(1);
                     }
@@ -677,9 +724,17 @@ public class WorkbenchComparator {
                             tertiaryStructure2.setThreshold(threshold);
                         }
 
-                        //manage option cm
-                        if(cmd.hasOption("cm"))
-                            tertiaryStructure2.setDistanceMatrixCalculationMethod("centerofmass");
+                        //manage calculation methods
+                        tertiaryStructure2.setDistanceMatrixCalculationMethodRNA(
+                                cmd.getOptionValue(cmr.getOpt(), TertiaryStructure.RNA_CM_TYPES[0])
+                        );
+                        tertiaryStructure2.setDistanceMatrixCalculationMethodProtein(
+                                cmd.getOptionValue(cmp.getOpt(), TertiaryStructure.PROTEIN_CM_TYPES[0])
+                        );
+                        tertiaryStructure2.setDistanceMatrixCalculationMethodMixed(
+                                cmd.getOptionValue(cmm.getOpt(), TertiaryStructure.MIXED_CM_TYPES[0])
+                        );
+
 
                         // Create the Structural RNA Tree and put the object into the map
                         st2 = new TERSAlignTree(tertiaryStructure2);
@@ -690,6 +745,7 @@ public class WorkbenchComparator {
                         try {
                             t2 = st2.getStructuralTree();
                         }catch (StackOverflowError e){
+                            e.printStackTrace();
                             System.err.println("The molecule in file " + f1.getName() + " is too big, can't generate the associated tree");
                             System.exit(1);
                         }
@@ -714,6 +770,7 @@ public class WorkbenchComparator {
                         try {
                             t2= st2.getStructuralTree();
                         }catch (StackOverflowError e){
+                            e.printStackTrace();
                             System.err.println("The molecule in file " + f1.getName() + " is too big, can't generate the associated tree");
                             System.exit(1);
                         }
