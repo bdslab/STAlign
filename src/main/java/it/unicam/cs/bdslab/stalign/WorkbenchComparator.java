@@ -112,7 +112,7 @@ public class WorkbenchComparator {
 
         Option cmp = Option.builder("cmp")
                 .longOpt("calculation-method-protein")
-                .desc("How the distance matrix is calculated for Protein structures: \"cm\" for center of mass, \"d\" default, \"ca\" CA atom")
+                .desc("How the distance matrix is calculated for Protein structures: \"cm\" for center of mass, \"d\" default, \"ca\" CA atom, \"cb\" CB atom")
                 .hasArgs()
                 .numberOfArgs(1)
                 .build();

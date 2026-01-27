@@ -45,7 +45,7 @@ public class TertiaryStructure {
      */
     public static final int INDEX_DISTANCE_THRESHOLD = 2;
     public static final String[] RNA_CM_TYPES = {"default", "C1", "centerofmass", "ringcentroid"};
-    public static final String[] PROTEIN_CM_TYPES = {"default", "centerofmass", "CA"};
+    public static final String[] PROTEIN_CM_TYPES = {"default", "centerofmass", "CA", "CB"};
     public static final String[] MIXED_CM_TYPES = {"default", "centerofmass"};
     private final Structure structure;
     private double threshold; //Value between 4.5 and 12 ångström
@@ -387,6 +387,8 @@ public class TertiaryStructure {
             Atom caAtom = group.getAtom(atomName);
             if (caAtom != null)
                 caAtoms.add(caAtom);
+            else if (getRepresentativeAtom(group) != null)
+                caAtoms.add(getRepresentativeAtom(group));
         }
         int groupsNumber = caAtoms.size();
         double[][] distanceMatrix = new double[groupsNumber][];
@@ -482,6 +484,7 @@ public class TertiaryStructure {
         switch (this.distanceMatrixCalculationMethodProtein) {
             case "default" -> this.calculateDistanceMatrixDefault();
             case "CA" -> this.calculateDistanceMatrixByAtom("CA");
+            case "CB" -> this.calculateDistanceMatrixByAtom("CB");
             case "centerofmass" -> this.calculateDistanceMatrixCenterOfMass();
         }
     }
@@ -536,4 +539,19 @@ public class TertiaryStructure {
         return i >= j ? this.distanceMatrix[i][j] : this.distanceMatrix[j][i];
     }
 
+    private Atom getRepresentativeAtom(Group g) {
+        switch (g.getType()) {
+            case AMINOACID:
+                if (g.hasAtom("CA") && g.getAtom("CA").getElement() == Element.C) {
+                    return g.getAtom("CA");
+                }
+                break;
+            case NUCLEOTIDE:
+                if (g.hasAtom("P")) {
+                    return g.getAtom("P");
+                }
+                break;
+        }
+        return null;
+    }
 }
