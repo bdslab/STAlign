@@ -50,7 +50,7 @@
                         <configuration>
                             <archive>
                                 <manifest>
-                                    <mainClass>it.unicam.cs.bdslab.stalign.Workbench</mainClass>
+                                    <mainClass>it.unicam.cs.bdslab.stalign.WorkbenchComparator</mainClass>
                                 </manifest>
                             </archive>
                             <descriptorRefs>
