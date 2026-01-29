@@ -22,9 +22,6 @@
 package it.unicam.cs.bdslab.stalign;
 
 import org.biojava.nbio.structure.*;
-import org.biojava.nbio.structure.Chain;
-import org.biojava.nbio.structure.GroupType;
-import org.biojava.nbio.structure.Structure;
 import org.biojava.nbio.structure.contact.Pair;
 import org.biojava.nbio.structure.secstruc.SecStrucCalc;
 
@@ -116,9 +113,10 @@ public class TertiaryStructure {
     private void calculateContactMatrix(){
         double[][] distanceMatrix = getDistanceMatrix();
         boolean[][] contactMatrix = new boolean[distanceMatrix.length][distanceMatrix.length];
-        for (int i=0; i<distanceMatrix.length; i++) {
+        for (int i=0; i < distanceMatrix.length; i++) {
             for (int j = 0; j < distanceMatrix.length; j++) {
                 contactMatrix[i][j] = Math.abs(i-j) > INDEX_DISTANCE_THRESHOLD && accessDistanceMatrix(i, j) <= this.threshold && i != j;
+                contactMatrix[j][i] = contactMatrix[i][j];
             }
         }
         this.contactMatrix = contactMatrix;
@@ -180,7 +178,7 @@ public class TertiaryStructure {
                 distanceMatrix[i][j] = Calc.getDistance(representativeAtomsArray[i], representativeAtomsArray[j]);
         this.distanceMatrix = distanceMatrix;
     }
-
+    
     private Atom[] getRepresentativeAtomArrayFromSpecifiedChains(List<Chain> chainsList) {
         List<Atom> tempRepresentativeAtomsArray = new ArrayList<>();
         chainsList.forEach(chain -> tempRepresentativeAtomsArray.addAll(Arrays.asList(StructureTools.getRepresentativeAtomArray(chain))));
@@ -265,7 +263,7 @@ public class TertiaryStructure {
      */
     public void setDistanceMatrixCalculationMethodRNA(String calculationMethod){
         checkMethod(calculationMethod, RNA_CM_TYPES);
-        this.distanceMatrixCalculationMethodRNA = calculationMethod.toLowerCase(Locale.ROOT);
+        this.distanceMatrixCalculationMethodRNA = calculationMethod.toLowerCase();
     }
 
     /**
@@ -354,7 +352,7 @@ public class TertiaryStructure {
      */
     public void setDistanceMatrixCalculationMethodProtein(String distanceMatrixCalculationMethodProtein) {
         checkMethod(distanceMatrixCalculationMethodProtein, PROTEIN_CM_TYPES);
-        this.distanceMatrixCalculationMethodProtein = distanceMatrixCalculationMethodProtein;
+        this.distanceMatrixCalculationMethodProtein = distanceMatrixCalculationMethodProtein.toLowerCase();
     }
 
     /**
@@ -363,7 +361,7 @@ public class TertiaryStructure {
      */
     public void setDistanceMatrixCalculationMethodMixed(String distanceMatrixCalculationMethodMixed) {
         checkMethod(distanceMatrixCalculationMethodMixed, MIXED_CM_TYPES);
-        this.distanceMatrixCalculationMethodMixed = distanceMatrixCalculationMethodMixed;
+        this.distanceMatrixCalculationMethodMixed = distanceMatrixCalculationMethodMixed.toLowerCase();
     }
 
     private void checkMethod(String method, String[] validMethods){
@@ -473,8 +471,8 @@ public class TertiaryStructure {
     private void calculateDistanceMatrixRNA() {
         switch (this.distanceMatrixCalculationMethodRNA) {
             case "default" -> this.calculateDistanceMatrixDefault();
-            case "C1" -> this.calculateDistanceMatrixByAtom("C1'");
-            case "O3" -> this.calculateDistanceMatrixByAtom("O3'");
+            case "c1" -> this.calculateDistanceMatrixByAtom("C1'");
+            case "o3" -> this.calculateDistanceMatrixByAtom("O3'");
             case "centerofmass" -> this.calculateDistanceMatrixCenterOfMass();
             case "ringcentroid" -> this.calculateDistanceMatrixRingCentroid();
         }
@@ -483,8 +481,8 @@ public class TertiaryStructure {
     private void calculateDistanceMatrixProtein() {
         switch (this.distanceMatrixCalculationMethodProtein) {
             case "default" -> this.calculateDistanceMatrixDefault();
-            case "CA" -> this.calculateDistanceMatrixByAtom("CA");
-            case "CB" -> this.calculateDistanceMatrixByAtom("CB");
+            case "ca" -> this.calculateDistanceMatrixByAtom("CA");
+            case "cb" -> this.calculateDistanceMatrixByAtom("CB");
             case "centerofmass" -> this.calculateDistanceMatrixCenterOfMass();
         }
     }
@@ -550,6 +548,8 @@ public class TertiaryStructure {
                 if (g.hasAtom("P")) {
                     return g.getAtom("P");
                 }
+                break;
+            default:
                 break;
         }
         return null;

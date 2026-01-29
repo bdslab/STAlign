@@ -4,9 +4,6 @@ import org.biojava.nbio.structure.*;
 import org.biojava.nbio.structure.io.PDBFileReader;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-
-import java.util.Arrays;
-
 import static org.junit.jupiter.api.Assertions.*;
 
 /**
@@ -22,11 +19,10 @@ class TertiaryStructureTest {
     void testCalculateDistanceMatrix(){
         //Load a PROTEIN file
         Structure struc = loadFile("3mge");
+        assertNotNull(struc);
         TertiaryStructure tertiaryStructure = new TertiaryStructure(struc);
 
-        tertiaryStructure.setDistanceMatrixCalculationMethod("Default");
         double[][] resultMatrix = tertiaryStructure.getDistanceMatrix();
-
 
         //Check matrix length
         assertEquals(204, resultMatrix.length, "Matrix length should be 204");
@@ -49,7 +45,6 @@ class TertiaryStructureTest {
         //Load an RNA file
         struc = loadFile("4gxy");
         tertiaryStructure = new TertiaryStructure(struc);
-        tertiaryStructure.setDistanceMatrixCalculationMethod("Default");
         resultMatrix = tertiaryStructure.getDistanceMatrix();
 
         //Check matrix length
@@ -80,7 +75,7 @@ class TertiaryStructureTest {
 
         TertiaryStructure tertiaryStructure = new TertiaryStructure(struc);
 
-        tertiaryStructure.setDistanceMatrixCalculationMethod("CenterOfMass");
+        tertiaryStructure.setDistanceMatrixCalculationMethodProtein("CenterOfMass");
         double[][] resultMatrix = tertiaryStructure.getDistanceMatrix();
 
         //Check matrix length
@@ -93,20 +88,20 @@ class TertiaryStructureTest {
         assertEquals(0.0,resultMatrix[resultMatrix.length-1][resultMatrix.length-1], "Distance should be 0");
 
         //Test on the first two distance
-        assertEquals(4.620100901228067, resultMatrix[0][1], "Distance should be 4.6201...");
+        assertEquals(4.620100901228067, resultMatrix[1][0], "Distance should be 4.6201...");
 
         //Test on two randoms distances in the middle
         assertEquals(5.236362921223696, resultMatrix[35][32], "Distance should be 5.2363...");
 
         //Test on the last two CA distance
-        assertEquals(5.751582341272176, resultMatrix[resultMatrix.length-2][resultMatrix.length-1], "Distance should be 5.7515...");
+        assertEquals(5.751582341272176, resultMatrix[resultMatrix.length-1][resultMatrix.length-2], "Distance should be 5.7515...");
 
 
         //Load an RNA file
         struc = loadFile("4gxy");
         tertiaryStructure = new TertiaryStructure(struc);
 
-        tertiaryStructure.setDistanceMatrixCalculationMethod("CenterOfMass");
+        tertiaryStructure.setDistanceMatrixCalculationMethodRNA("CenterOfMass");
         resultMatrix = tertiaryStructure.getDistanceMatrix();
 
         //Check matrix length
@@ -119,7 +114,7 @@ class TertiaryStructureTest {
         assertEquals(0,resultMatrix[resultMatrix.length-1][resultMatrix.length-1], "Distance should be 0");
 
         //Test on the first two distance
-        assertEquals(4.235092167400089, resultMatrix[0][1], "Distance should be 4.2350...");
+        assertEquals(4.235092167400089, resultMatrix[1][0], "Distance should be 4.2350...");
 
         //Test on two randoms distance in the middle
         assertEquals(17.071554573913147, resultMatrix[35][32], "Distance should be 17.0715...");
@@ -127,7 +122,7 @@ class TertiaryStructureTest {
         assertEquals(34.05658516896883, resultMatrix[160][32], "Distance should be 34.0565...");
 
         //Test on the last two P distance
-        assertEquals(6.53266416258413, resultMatrix[resultMatrix.length-2][resultMatrix.length-1], "Distance should be 6.5326...");
+        assertEquals(6.53266416258413, resultMatrix[resultMatrix.length-1][resultMatrix.length-2], "Distance should be 6.5326...");
     }
 
     @Test
@@ -139,7 +134,6 @@ class TertiaryStructureTest {
         TertiaryStructure tertiaryStructure = new TertiaryStructure(struc);
         tertiaryStructure.setThreshold(12);
 
-        tertiaryStructure.setDistanceMatrixCalculationMethod("Default");
         boolean[][] actualContactMatrix = tertiaryStructure.getContactMatrix();
 
         //USING 12 AS THRESHOLD
@@ -147,20 +141,20 @@ class TertiaryStructureTest {
         //Check if matrix length is right
         assertEquals(actualContactMatrix.length, tertiaryStructure.getDistanceMatrix().length, "contact matrix length should be the same as distance matrix length");
 
-        //First value should be equal to himself.
-        assertTrue(actualContactMatrix[0][0], "first value should always be equal to himself");
+        //First value should be false.
+        assertFalse(actualContactMatrix[0][0], "first value should always be false");
 
-        //Last value should be equal to himself.
-        assertTrue(actualContactMatrix[actualContactMatrix.length-1][actualContactMatrix.length-1], "last value should always be equal to himself");
+        //Last value should be false.
+        assertFalse(actualContactMatrix[actualContactMatrix.length-1][actualContactMatrix.length-1], "last value should always be false");
 
-        //Should be true, distance is 3.7951...
-        assertTrue(actualContactMatrix[0][1], "first with second value should be true, distance is 3.7951...");
+        //Should be false, they are contiguous residues, distance is 3.7951...
+        assertFalse(actualContactMatrix[0][1], "first with second value should be true, distance is 3.7951...");
 
-        //Should be true, distance is 3.7994
-        assertTrue(actualContactMatrix[actualContactMatrix.length-1][actualContactMatrix.length-2], "last two values should be true, distance is 3.7994...");
+        //Should be false, they are contiguous residues, distance is 3.7994
+        assertFalse(actualContactMatrix[actualContactMatrix.length-1][actualContactMatrix.length-2], "last two values should be true, distance is 3.7994...");
 
         //Should be true, distance is 5.0299...
-        assertTrue(actualContactMatrix[32][35], "32 - 35 value should be true, distance is 5.0299...");
+        assertTrue(actualContactMatrix[35][32], "32 - 35 value should be true, distance is 5.0299...");
 
         //Should be false, distance is 13.3787...
         assertFalse(actualContactMatrix[7][3], "7 - 3 value should be false, distance is 13.3787...");
@@ -203,20 +197,20 @@ class TertiaryStructureTest {
         //Check if matrix length is right
         assertEquals(actualContactMatrix.length, tertiaryStructure.getContactMatrix().length, "contact matrix length should be the same as distance matrix length");
 
-        //First value should be equal to himself.
-        assertTrue(actualContactMatrix[0][0], "first value should always be equal to himself");
+        //First value should be equal to false.
+        assertFalse(actualContactMatrix[0][0], "first value should always false");
 
-        //Last value should be equal to himself.
-        assertTrue(actualContactMatrix[actualContactMatrix.length-1][actualContactMatrix.length-1], "last value should always be equal to himself");
+        //Last value should be equal to false.
+        assertFalse(actualContactMatrix[actualContactMatrix.length-1][actualContactMatrix.length-1], "last value should always be false");
 
-        //Should be true, distance is 4.6201...
-        assertTrue(actualContactMatrix[0][1], "first with second value should be true, distance is 6.0022...");
+        //Should be false, they are contiguous residues, distance is 6.0022...
+        assertFalse(actualContactMatrix[1][0], "first with second value should be false, distance is 6.0022...");
 
-        //Should be true, distance is 6.1419
-        assertTrue(actualContactMatrix[actualContactMatrix.length-1][actualContactMatrix.length-2], "last two values should be true, distance is 6.1419...");
+        //Should be false, distance is 6.1419
+        assertFalse(actualContactMatrix[actualContactMatrix.length-1][actualContactMatrix.length-2], "last two values should be false, distance is 6.1419...");
 
         //Should be false, distance is 17.0535...
-        assertFalse(actualContactMatrix[32][35], "32 - 35 value should be true, distance is 17.0535...");
+        assertFalse(actualContactMatrix[32][35], "32 - 35 value should be false, distance is 17.0535...");
 
         //Should be false, distance is 19.8870...
         assertFalse(actualContactMatrix[7][3], "7 - 3 value should be false, distance is 19.8870...");
@@ -251,7 +245,7 @@ class TertiaryStructureTest {
         TertiaryStructure tertiaryStructure = new TertiaryStructure(struc);
         tertiaryStructure.setThreshold(12);
 
-        tertiaryStructure.setDistanceMatrixCalculationMethod("CenterOfMass");
+        tertiaryStructure.setDistanceMatrixCalculationMethodProtein("CenterOfMass");
         boolean[][] actualContactMatrix = tertiaryStructure.getContactMatrix();
 
         //USING 12 AS THRESHOLD
@@ -259,17 +253,17 @@ class TertiaryStructureTest {
         //Check if matrix length is right
         assertEquals(actualContactMatrix.length, tertiaryStructure.getContactMatrix().length, "contact matrix length should be the same as distance matrix length");
 
-        //First value should be equal to himself.
-        assertTrue(actualContactMatrix[0][0], "first value should be equal to himself");
+        //First should be false
+        assertFalse(actualContactMatrix[0][0], "first value should be false");
 
-        //Last value should be equal to himself.
-        assertTrue(actualContactMatrix[actualContactMatrix.length-1][actualContactMatrix.length-1], "last value should be equal to himself");
+        //Last value should be equal false.
+        assertFalse(actualContactMatrix[actualContactMatrix.length-1][actualContactMatrix.length-1], "last value should be false");
 
-        //Should be true, distance is 4.6201...
-        assertTrue(actualContactMatrix[0][1], "first with second value should be true, distance is 4.6201...");
+        //Should be false, they are contiguous residues, distance is 4.6201...
+        assertFalse(actualContactMatrix[0][1], "first with second value should be false, distance is 4.6201...");
 
-        //Should be true, distance is 3.7994
-        assertTrue(actualContactMatrix[actualContactMatrix.length-1][actualContactMatrix.length-2], "last two values should be true, distance is 3.7994...");
+        //Should be false, distance is 3.7994
+        assertFalse(actualContactMatrix[actualContactMatrix.length-1][actualContactMatrix.length-2], "last two values should be false, distance is 3.7994...");
 
         //Should be true, distance is 5.2363...
         assertTrue(actualContactMatrix[32][35], "32 - 35 value should be true, distance is 5.2363...");
@@ -314,16 +308,16 @@ class TertiaryStructureTest {
         assertEquals(actualContactMatrix.length, tertiaryStructure.getContactMatrix().length, "contact matrix length should be the same as distance matrix length");
 
         //First value should be not be equal to himself.
-        assertTrue(actualContactMatrix[0][0], "first value should be equal to himself");
+        assertFalse(actualContactMatrix[0][0], "first value should be false");
 
-        //Last value should not be equal to himself.
-        assertTrue(actualContactMatrix[actualContactMatrix.length-1][actualContactMatrix.length-1], "last value should be equal to himself");
+        //Last value should not be false.
+        assertFalse(actualContactMatrix[actualContactMatrix.length-1][actualContactMatrix.length-1], "last value should be false");
 
-        //Should be true
-        assertTrue(actualContactMatrix[0][1], "first with second value should be true");
+        //Should be false, they are contiguous residues, distance is 4.2350...
+        assertFalse(actualContactMatrix[0][1], "first with second value should be false");
 
-        //Should be true
-        assertTrue(actualContactMatrix[actualContactMatrix.length-1][actualContactMatrix.length-2], "last two values should be true");
+        //Should be false
+        assertFalse(actualContactMatrix[actualContactMatrix.length-1][actualContactMatrix.length-2], "last two values should be false");
 
         //Should be false, distance is 14.3414...
         assertFalse(actualContactMatrix[32][35], "32 - 35 value should be true, distance is 14.3414...");
@@ -379,9 +373,8 @@ class TertiaryStructureTest {
      */
     private Structure loadFile(String fileName){
         PDBFileReader pdbreader = new PDBFileReader();
-        pdbreader.setPath("/resources/resources/secondaryStructureTests/pdb");
         try{
-            return pdbreader.getStructureById(fileName);
+            return pdbreader.getStructure(this.getClass().getResource("/cifAndPDB/PDB").getPath() + "/" + fileName + ".pdb");
         } catch (Exception e){
             e.printStackTrace();
         }
